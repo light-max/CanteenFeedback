@@ -1,0 +1,32 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>食堂意见反馈系统</title>
+
+    <link rel="stylesheet" href="/webjars/bootstrap/4.5.0/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <style>
+        body {
+            background: url("/images/login-bg.jpg");
+            background-size: cover;
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="common/admin::navbar"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div th:replace="common/admin::sidebarMenu"></div>
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+            <h1 style="margin-top: 40px;color: white" class="display-4">食堂意见反馈系统 - 后勤管理后台</h1>
+        </main>
+    </div>
+</div>
+
+</body>
+</html>

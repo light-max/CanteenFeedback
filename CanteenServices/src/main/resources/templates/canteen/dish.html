@@ -1,0 +1,171 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>食堂意见反馈系统</title>
+
+    <link rel="stylesheet" href="/webjars/bootstrap/4.5.0/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/comm.css">
+
+    <script src="/webjars/jquery/3.5.1/jquery.js"></script>
+    <script src="/webjars/bootstrap/4.5.0/js/bootstrap.js"></script>
+    <script src="/js/net.js"></script>
+
+    <style>
+        .list {
+            width: 800px;
+            /*max-height: 68vh;*/
+            /*overflow: scroll;*/
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-gap: 8px;
+            grid-template-rows: repeat(auto-fill, auto);
+        }
+
+        .item {
+            border: 1px solid gray;
+            border-radius: 8px;
+            box-sizing: border-box;
+            display: grid;
+            grid-template-areas: "cover name nav" "cover material nav" "cover des nav";
+            grid-template-columns: auto 1fr auto;
+            grid-template-rows: auto auto auto;
+            grid-column-gap: 16px;
+            grid-row-gap: 2px;
+        }
+
+        .cover {
+            grid-area: cover;
+            box-sizing: border-box;
+            height: 168px;
+            width: 200px;
+            border: 1px solid gray;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .name {
+            grid-area: name;
+            line-height: 32px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .material {
+            grid-area: material;
+        }
+
+        .material-v {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: box;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .des {
+            grid-area: des;
+        }
+
+        .des-v {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: box;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .nav {
+            margin: 8px;
+            grid-area: nav;
+            display: grid;
+            grid-template-rows: auto auto 1fr;
+        }
+    </style>
+
+    <script>
+        function select() {
+            var i = $("select").val()
+            if (i == 0) {
+                window.location.href = "/canteen/dish"
+            } else {
+                window.location.href = "/canteen/dish?stallId=" + i
+            }
+        }
+
+        function openDishAdd(stallId) {
+            location.href = '/canteen/dish/add/' + stallId
+        }
+    </script>
+</head>
+<body>
+
+<div th:replace="common/canteen::navbar"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div th:replace="common/canteen::sidebarMenu"></div>
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h4">
+                    <a class="btn-link" href="/canteen/dish">档口菜品</a>
+                    &nbsp;/&nbsp;
+                    <select onchange="select()">
+                        <option th:value="0">全部档口</option>
+                        <option th:each="s:${stalls}" th:value="${s.id}" th:text="${s.name}"></option>
+                    </select>
+                </h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <button type="button" class="btn btn-sm btn-outline-primary"
+                            th:if="${stall}!=null"
+                            th:onclick="'openDishAdd('+${stall.id}+')'">添加菜品
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-primary"
+                            th:if="${stall}==null"
+                            onclick="alert('请选择一个档口后添加菜品')">添加菜品
+                    </button>
+                </div>
+            </div>
+            <div class="list">
+                <div th:each="l:${list}" class="item">
+                    <img class="cover" th:src="${l.cover}">
+                    <div class="name">
+                        <a class="btn-link font-weight-bold" th:href="'/canteen/dish/update/'+${l.id}"
+                           th:text="${l.name}"></a>
+                    </div>
+                    <div class="material">
+                        <b>原材料：</b>
+                        <div class="material-v" th:text="${l.material}"></div>
+                    </div>
+                    <div class="des">
+                        <b>简介：</b>
+                        <div class="des-v" th:text="${l.des}"></div>
+                    </div>
+                    <div class="nav">
+                        <div>
+                            <a href="#" class="btn-link">意见</a>
+                        </div>
+                        <div>
+                            <a href="#" class="btn-link">评论</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top: 8px">
+                <div th:replace="common/canteen::page"></div>
+            </div>
+        </main>
+    </div>
+</div>
+
+</body>
+</html>
+
+<script>
+    var sid = [[${stallId}]]
+    $("option[value=" + sid + "]").prop("selected", true)
+</script>

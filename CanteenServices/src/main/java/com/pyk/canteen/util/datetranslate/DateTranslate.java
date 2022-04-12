@@ -27,6 +27,9 @@ public interface DateTranslate {
                 try {
                     field.setAccessible(true);
                     Object o = field.get(this);
+                    if (o == null && dateParameter.empty()) {
+                        return "";
+                    }
                     return new SimpleDateFormat(dateParameter.value()).format(o);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();

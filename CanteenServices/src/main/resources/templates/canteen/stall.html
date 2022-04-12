@@ -1,0 +1,84 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>食堂意见反馈系统</title>
+
+    <link rel="stylesheet" href="/webjars/bootstrap/4.5.0/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/comm.css">
+
+    <script src="/webjars/jquery/3.5.1/jquery.js"></script>
+    <script src="/webjars/bootstrap/4.5.0/js/bootstrap.js"></script>
+    <script src="/js/net.js"></script>
+
+    <style>
+        .list {
+            width: 800px;
+            max-height: 80vh;
+            overflow: scroll;
+            /*display: grid;*/
+            /*grid-template-columns: 1fr 1fr;*/
+            grid-gap: 24px;
+            /*grid-template-rows: repeat(auto-fill, auto);*/
+        }
+    </style>
+
+    <script>
+        function select() {
+            window.location.href = [
+                "/canteen/stall?enable=true",
+                "/canteen/stall?enable=false",
+                "/canteen/stall"
+            ][$("select").val()]
+        }
+    </script>
+</head>
+<body>
+
+<div th:replace="common/canteen::navbar"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div th:replace="common/canteen::sidebarMenu"></div>
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">档口列表</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <select style="width: 80px" onchange="select()">
+                        <option value="0">营业中</option>
+                        <option value="1">已关闭</option>
+                        <option value="2">所有</option>
+                    </select>&nbsp;&nbsp;
+                    <button type="button" class="btn btn-sm btn-outline-primary"
+                            onclick="location.href='/canteen/stall/add'">添加档口
+                    </button>&nbsp;&nbsp;&nbsp;
+                </div>
+            </div>
+            <div class="list">
+                <a th:href="'/canteen/stall/update/'+${i.id}" th:each="i:${list}">
+                    <div class="alert alert-primary font-weight-bold" th:text="${i.name}"></div>
+                </a>
+            </div>
+        </main>
+    </div>
+</div>
+
+</body>
+</html>
+
+<script>
+    $("select").each((i, item) => {
+        var single = [[${status}]]
+        console.log(single)
+        if (single != undefined) {
+            if (single) {
+                $("option[value='0']").prop("selected", true);
+            } else {
+                $("option[value='1']").prop("selected", true);
+            }
+        } else {
+            $("option[value='2']").prop("selected", true);
+        }
+    })
+</script>

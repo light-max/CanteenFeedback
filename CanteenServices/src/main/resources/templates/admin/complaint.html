@@ -1,0 +1,117 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>食堂意见反馈系统</title>
+
+    <link rel="stylesheet" href="/webjars/bootstrap/4.5.0/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/comm.css">
+
+    <script src="/webjars/jquery/3.5.1/jquery.js"></script>
+    <script src="/webjars/bootstrap/4.5.0/js/bootstrap.js"></script>
+    <script src="/js/net.js"></script>
+
+    <style>
+        .list {
+            width: 800px;
+        }
+
+        .item {
+            display: grid;
+            grid-template-areas: "head uid" "head time" "head content" "head btns" "head ." "hr hr";
+            grid-template-columns: auto 1fr;
+            grid-column-gap: 12px;
+            grid-row-gap: 2px;
+        }
+
+        .head {
+            grid-area: head;
+            width: 64px;
+            height: 64px;
+            object-fit: cover;
+            border: 1px solid gray;
+            border-radius: 32px;
+        }
+
+        .uid {
+            grid-area: uid;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .time {
+            grid-area: time;
+            color: gray;
+            font-size: 13px;
+        }
+
+        .content {
+            grid-area: content;
+            font-size: 14px;
+        }
+
+        .btns {
+            grid-area: btns;
+
+        }
+
+        .hr {
+            width: 100%;
+            grid-area: hr;
+        }
+    </style>
+
+    <script>
+        function select() {
+            var i = $("select").val()
+            window.location.href = "/admin/complaint?status=" + i
+        }
+    </script>
+</head>
+<body>
+
+<div th:replace="common/admin::navbar"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div th:replace="common/admin::sidebarMenu"></div>
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">师生申诉列表</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <select class="form-control" onchange="select()">
+                        <option value="0">待处理</option>
+                        <option value="1">已处理</option>
+                        <option value="2">全部</option>
+                    </select>
+                </div>
+            </div>
+            <div class="list">
+                <div class="item" th:each="l:${list}">
+                    <img class="head" th:src="'/head/'+${l.createById}"/>
+                    <div class="uid" th:text="${l.createById}"></div>
+                    <div class="time" th:text="${l.translateDate()}"></div>
+                    <div class="content" th:text="${l.des}"></div>
+                    <div class="btns">
+                        <span th:if="${l.result!=null}" style="margin-right: 8px" class="font-weight-bold text-success">已处理</span>
+                        <span th:if="${l.result==null}" style="margin-right: 8px" class="font-weight-bold text-danger">未处理</span>
+                        <a class="alert-link" th:href="'/admin/complaint/details/'+${l.id}">查看详情</a>
+                    </div>
+                    <hr class="hr">
+                </div>
+            </div>
+            <div style="margin-top: 8px">
+                <div th:replace="common/admin::page"></div>
+            </div>
+        </main>
+    </div>
+</div>
+
+</body>
+</html>
+
+<script>
+    var status = [[${status}]]
+    $("option[value=" + status + "]").prop("selected", true)
+</script>

@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @EnableTransactionManagement(proxyTargetClass = true)  //能够使用声明式事务管理
 @Configuration
-@MapperScan("com.lpf.book.mapper")
+@MapperScan("com.pyk.canteen.mapper")
 public class MybatisPlusConfig {
 
     /**

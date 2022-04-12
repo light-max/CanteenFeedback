@@ -1,0 +1,61 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>食堂意见反馈系统</title>
+
+    <link rel="stylesheet" href="/webjars/bootstrap/4.5.0/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/admin.css">
+
+    <script src="/webjars/jquery/3.5.1/jquery.js"></script>
+    <script src="/webjars/bootstrap/4.5.0/js/bootstrap.js"></script>
+    <script src="/js/net.js"></script>
+
+    <style>
+    </style>
+    <script>
+        function post() {
+            net.post({
+                url: "/canteen/stall",
+                toast: true,
+                data: {
+                    name: $("#name").val(),
+                    des: $("#des").val()
+                },
+                success: function (o) {
+                    window.location.href = '/canteen/stall/update/' + o.id
+                }
+            })
+        }
+    </script>
+</head>
+<body>
+
+<div th:replace="common/canteen::navbar"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div th:replace="common/canteen::sidebarMenu"></div>
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">添加档口</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                </div>
+            </div>
+            <div style="width: 600px">
+                <b>档口名称</b><br>
+                <input id="name" style="margin-top: 8px;width:100%" class="form-control form-text" type="text"
+                       placeholder="请输入档口名称">
+                <br>
+                <b>档口简介</b><br>
+                <textarea id="des" style="margin-top: 8px;width:100%" rows="7" class="form-control"
+                          placeholder="请输入档口简介"></textarea>
+                <br>
+                <button type="button" class="btn btn-primary btn-block" onclick="post()">提交</button>
+            </div>
+        </main>
+    </div>
+</div>
+
+</body>
+</html>

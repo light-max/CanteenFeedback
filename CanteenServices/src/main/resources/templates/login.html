@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>登陆</title>
+
+    <link rel="stylesheet" href="/webjars/bootstrap/4.5.0/css/bootstrap.css">
+
+    <style>
+        main {
+            /*width: max-content;*/
+            /*position: absolute;*/
+            /*left: 50%;*/
+            /*top: 50%;*/
+            /*transform: translate(-50%, -50%);*/
+
+            position: absolute;
+            right: 20%;
+            top: 50%;
+            transform: translate(20%, -50%);
+            /*background: white;*/
+            border-radius: 8px;
+        }
+
+        form {
+            width: 400px;
+        }
+        body{
+            background: url("/images/login-bg.jpg");
+            background-size: cover;
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+<main>
+    <form class="shadow-lg p-3 mb-5 bg-white rounded" method="post" th:action="${action}">
+        <br><br>
+        <h1 class="display-4 text-center" th:text="${role}"></h1>
+        <p class="lead text-center">请登录</p>
+        <hr class="my-4">
+        <input type="text" class="form-control form-group text-center" placeholder="请输入用户名" th:value="${username}" name="username">
+        <input type="password" class="form-control form-group text-center" placeholder="请输入密码" th:value="${pwd}" name="pwd">
+        <div class="alert alert-danger text-center" role="alert" th:if="${error}!=null" th:text="${error}">
+        </div>
+        <input class="btn btn-dark btn-block" type="submit" value="登陆">
+        <br>
+    </form>
+    <br>
+    <br>
+    <br>
+</main>
+</body>
+</html>

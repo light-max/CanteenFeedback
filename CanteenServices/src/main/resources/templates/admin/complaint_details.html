@@ -1,0 +1,309 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>食堂意见反馈系统</title>
+
+    <link rel="stylesheet" href="/webjars/bootstrap/4.5.0/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/comm.css">
+
+    <script src="/webjars/jquery/3.5.1/jquery.js"></script>
+    <script src="/webjars/bootstrap/4.5.0/js/bootstrap.js"></script>
+    <script src="/js/net.js"></script>
+
+    <style>
+        .layout {
+            height: 100%;
+            display: grid;
+            grid-template-columns: 5fr 6fr;
+            grid-column-gap: 8px;
+            grid-template-rows: auto;
+        }
+
+        .left {
+            /*border-radius: 16px;*/
+            /*border: solid 1px gray;*/
+            /*padding: 12px;*/
+            /*box-sizing: border-box;*/
+        }
+
+        .right {
+            /*border-radius: 16px;*/
+            /*border: solid 1px gray;*/
+            /*padding: 12px;*/
+            /*box-sizing: border-box;*/
+            /*max-height: 100vh;*/
+        }
+
+        .opinion-layout {
+            /*border: 1px solid gray;*/
+            /*border-radius: 8px;*/
+            box-sizing: border-box;
+            padding: 12px;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            grid-template-rows: auto auto 1fr;
+            grid-column-gap: 12px;
+            grid-template-areas: "head name" "head time" "head dish" "head content" "head images" "head video" "head feedback" "head .";
+        }
+
+        .o-head {
+            grid-area: head;
+            width: 64px;
+            height: 64px;
+            border-radius: 32px;
+            border: gray solid 1px;
+        }
+
+        .o-name {
+            grid-area: name;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .o-type {
+            font-size: 14px;
+            color: gray;
+        }
+
+        .o-time {
+            grid-area: time;
+            color: gray;
+            font-size: 13px;
+        }
+
+        .o-content {
+            grid-area: content;
+            color: #222;
+            font-size: 14px;
+        }
+
+        .o-images {
+            margin-top: 8px;
+            grid-area: images;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            width: 420px;
+            grid-gap: 4px;
+        }
+
+        .o-video {
+            font-weight: bold;
+            font-size: 14px;
+            grid-area: video;
+            margin-top: 4px;
+            /*margin-bottom: 4px;*/
+        }
+
+        .o-image {
+            width: 137px;
+            height: 137px;
+            object-fit: cover;
+            pointer-events: fill;
+            /*cursor: pointer;*/
+        }
+
+        .dish-images {
+            overflow: scroll;
+            height: 200px;
+            width: max-content;
+            display: grid;
+            grid-gap: 4px;
+            grid-template-columns: repeat(3, 160px);
+        }
+
+        .dish-images > img {
+            /*border: 1px solid gray;*/
+            border-radius: 8px;
+            width: 160px;
+            height: 160px;
+            object-fit: cover;
+        }
+    </style>
+
+    <script>
+        function postResult() {
+            net.post({
+                url: "/admin/complaint/execute",
+                data: {
+                    id: $("#complaintId").val(),
+                    result: $("#result").val()
+                },
+                toast: true,
+                reload: true,
+                success: function () {
+                    alert("处理成功")
+                }
+            })
+        }
+    </script>
+</head>
+<body>
+
+<div th:replace="common/admin::navbar"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div th:replace="common/admin::sidebarMenu"></div>
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+            <div class="layout">
+                <div class="left">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <b>学生建议</b>
+                    </div>
+                    <div class="opinion-layout">
+                        <img class="o-head" th:src="${c.createByHead}"/>
+                        <div class="o-name">
+                            [[${c.createByName}]]&nbsp;
+                            <span class="o-type">
+                            ([[${c.createByType}]])
+                        </span>
+                        </div>
+                        <div class="o-time" th:text="${c.opinionCreateTime}"></div>
+                        <div class="o-content" th:text="${c.opinionContent}"></div>
+                        <div class="o-images">
+                            <div th:if="${!c.opinionImages.urls.isEmpty()}" th:each="image:${c.opinionImages.urls}">
+                                <a th:href="${image}" target="_blank">
+                                    <img class="o-image" th:src="${image}">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="o-video">
+                            <div th:if="${c.opinionVideo}!=null">
+                                <a th:href="${c.opinionVideo}" target="_blank">此建议包含一个视频 点击查看视频</a>
+                            </div>
+                        </div>
+                    </div>
+                    <b>食堂反馈</b>
+                    <textarea style="margin-top: 8px;margin-bottom: 16px"
+                              rows="4" class="form-control" th:text="${c.feedbackContent}" readonly>
+                    </textarea>
+                    <b>学生申诉</b>
+                    <textarea style="margin-top: 8px;margin-bottom: 16px"
+                              rows="4" class="form-control" th:text="${c.des}" readonly>
+                    </textarea>
+                    <div th:if="${c.result==null}" style="margin-top: 8px">
+                        <button type="button" class="btn btn-primary btn-block" data-toggle="modal"
+                                data-target="#resultDlg">处理学生申诉
+                        </button>
+                    </div>
+                    <div th:if="${c.result!=null}">
+                        <b>申诉处理结果</b>
+                        <textarea style="margin-top: 8px" rows="4" class="form-control" th:text="${c.result}" readonly></textarea>
+                    </div>
+                    <input id="complaintId" hidden th:value="${c.id}">
+                </div>
+                <div class="accordion right" id="accordionExample">
+                    <div class="card">
+                        <div class="card-header" id="headingOne">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse"
+                                        data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    档口信息
+                                </button>
+                            </h2>
+                        </div>
+
+                        <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
+                             data-parent="#accordionExample">
+                            <div class="card-body">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">档口ID</span>
+                                    </div>
+                                    <div class="input-group-append">
+                                        <span style="width: 80px" class="input-group-text"
+                                              th:text="${c.stallId}"></span>
+                                    </div>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">档口名称</span>
+                                    </div>
+                                    <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)"
+                                           readonly
+                                           th:value="${c.stallName}">
+                                </div>
+                                <b>档口简介</b>
+                                <textarea style="margin-top: 8px" rows="4" type="text" class="form-control"
+                                          aria-label="Amount (to the nearest dollar)"
+                                          readonly
+                                >[[${c.stallDes}]]</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="headingOne2">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse"
+                                        data-target="#collapseOne2" aria-expanded="true" aria-controls="collapseOne2">
+                                    菜品信息
+                                </button>
+                            </h2>
+                        </div>
+
+                        <div id="collapseOne2" class="collapse show" aria-labelledby="headingOne2"
+                             data-parent="#accordionExample">
+                            <div class="card-body">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">菜品ID</span>
+                                    </div>
+                                    <div class="input-group-append">
+                                        <span style="width: 80px" class="input-group-text" th:text="${c.dishId}"></span>
+                                    </div>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">菜品名称</span>
+                                    </div>
+                                    <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)"
+                                           readonly
+                                           th:value="${c.dishName}">
+                                </div>
+                                <b>菜品原材料</b>
+                                <textarea style="margin-top: 8px;margin-bottom: 16px" rows="3" type="text"
+                                          class="form-control"
+                                          aria-label="Amount (to the nearest dollar)"
+                                          readonly
+                                >[[${c.dishMaterial}]]</textarea>
+                                <b>菜品简介</b>
+                                <textarea style="margin-top: 8px;margin-bottom: 16px" rows="5" type="text"
+                                          class="form-control"
+                                          aria-label="Amount (to the nearest dollar)"
+                                          readonly
+                                >[[${c.dishDes}]]</textarea>
+                                <b>菜品图片</b>
+                                <div style="margin-top: 8px" class="dish-images">
+                                    <img th:each="image:${c.dishImages.urls}" th:src="${image}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<div class="modal fade" id="resultDlg" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">填写处理结果</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <textarea class="form-control" rows="8" placeholder="请填写处理结果" id="result"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="postResult()">提交</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+<script>
+
+</script>

@@ -1,0 +1,215 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>食堂意见反馈系统</title>
+
+    <link rel="stylesheet" href="/webjars/bootstrap/4.5.0/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/admin.css">
+
+    <script src="/webjars/jquery/3.5.1/jquery.js"></script>
+    <script src="/webjars/bootstrap/4.5.0/js/bootstrap.js"></script>
+    <script src="/js/net.js"></script>
+
+    <style>
+        .layout {
+            display: grid;
+            grid-template-columns: 5fr 6fr;
+            grid-column-gap: 8px;
+        }
+
+        .left {
+            border-radius: 16px;
+            border: solid 1px gray;
+            padding: 12px;
+            box-sizing: border-box;
+        }
+
+        .right {
+            border-radius: 16px;
+            border: solid 1px gray;
+            padding: 12px;
+            box-sizing: border-box;
+        }
+
+        .list {
+            overflow: scroll;
+            height: 65vh;
+            width: 100%;
+        }
+
+        .item {
+            width: 100%;
+            border: solid 1px gray;
+            border-radius: 16px;
+            margin-bottom: 8px;
+        }
+
+        .image {
+            width: 100%;
+            border: solid 1px gray;
+            border-radius: 16px;
+        }
+
+        .item-nav {
+            box-sizing: border-box;
+            padding-left: 8px;
+            padding-right: 8px;
+            display: grid;
+            grid-template-columns: auto 1fr auto auto;
+        }
+    </style>
+    <script>
+        function post() {
+            net.put({
+                url: "/canteen/stall",
+                toast: true,
+                data: {
+                    id: $("#id").val(),
+                    name: $("#name").val(),
+                    des: $("#des").val(),
+                    enable: $("input[type=radio]:checked").val()
+                },
+                reload: true,
+                success: function () {
+                    alert("修改成功")
+                }
+            })
+        }
+
+        function selectImage() {
+            var f = $("#file");
+            f.click()
+            f.on("change", function () {
+                var form = new FormData();
+                form.append("file", document.getElementById("file").files[0], $("#file").val());
+
+                var settings = {
+                    "url": "/canteen/stall/image/" + $("#id").val(),
+                    "method": "POST",
+                    "dataType": "json",
+                    "timeout": 0,
+                    "processData": false,
+                    "mimeType": "multipart/form-data",
+                    "contentType": false,
+                    "data": form
+                };
+
+                $.ajax(settings).done(function (result) {
+                    console.log(result)
+                    if (result.success) {
+                        alert("添加成功")
+                        window.location.reload();
+                    } else {
+                        alert(result.message);
+                    }
+                });
+            });
+        }
+
+        function deleteImage(a) {
+            if (confirm("你确定要删除这张图片吗")) {
+                net.delete({
+                    url: "/canteen" + $(a).attr("deleteUrl"),
+                    toast: true,
+                    reload: true,
+                    // success: function () {
+                    //     alert("删除成功")
+                    // }
+                })
+            }
+        }
+
+        function openDish() {
+            var id = $("#id").val()
+            window.location.href = "/canteen/dish?stallId=" + id
+        }
+    </script>
+</head>
+<body>
+
+<div th:replace="common/canteen::navbar"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div th:replace="common/canteen::sidebarMenu"></div>
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">修改档口</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <button type="button" class="btn btn-outline-primary"
+                            onclick="openDish()">管理菜品
+                    </button>
+                </div>
+            </div>
+            <div class="layout">
+                <div class="left">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h5">档口信息</h1>
+                        <div class="btn-toolbar mb-2 mb-md-0">
+                        </div>
+                    </div>
+                    <b>档口ID</b><br>
+                    <input id="id" style="margin-top: 8px;width:100%" class="form-control form-text" type="text"
+                           placeholder="请输入档口名称" th:value="${stall.id}" readonly>
+                    <br>
+                    <b>档口名称</b><br>
+                    <input id="name" style="margin-top: 8px;width:100%" class="form-control form-text" type="text"
+                           placeholder="请输入档口名称" th:value="${stall.name}">
+                    <br>
+                    <b>档口简介</b><br>
+                    <textarea id="des" style="margin-top: 8px;width:100%" rows="7" class="form-control"
+                              placeholder="请输入档口简介" th:text="${stall.des}"></textarea>
+                    <br>
+                    <b>是否启用</b><br>
+                    <div class="form-check form-check-inline" style="margin-top: 8px">
+                        <input type="radio" class="form-check-input" name="enable" id="t" value="true">
+                        <label class="form-check-label" for="t">启用</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input type="radio" class="form-check-input" name="enable" id="f" value="false">
+                        <label class="form-check-label" for="f">禁用</label>
+                    </div>
+                    <br>
+                    <br>
+                    <button type="button" class="btn btn-primary btn-block" onclick="post()">提交</button>
+                </div>
+                <div class="right">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <b class="h5">档口照片</b>
+                        <div class="btn-toolbar mb-2 mb-md-0">
+                            <button type="button" class="btn btn-sm btn-outline-primary"
+                                    onclick="selectImage()">添加照片
+                            </button>&nbsp;&nbsp;&nbsp;
+                        </div>
+                    </div>
+                    <input id="file" type="file" value="选择文件" accept="image/*" hidden>
+                    <div class="list">
+                        <div class="item" th:each="url:${images.urls}">
+                            <img class="image" th:src="${url}"/>
+                            <div class="item-nav">
+                                <a class="btn-link btn font-weight-bold" target="_blank"
+                                   th:href="${url}">浏览</a>
+                                <div></div>
+                                <!--                                <a href="#" class="btn-link btn font-weight-bold">替换</a>-->
+                                <a href="#" class="btn-link btn font-weight-bold text-danger"
+                                   onclick="deleteImage(this)" th:attr="deleteUrl=${url}">删除</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+</body>
+</html>
+<script>
+    var single = [[${stall.enable}]]
+    if (single) {
+        $("#t").prop("checked", true)
+    } else {
+        $("#f").prop("checked", true)
+    }
+</script>

@@ -1,0 +1,264 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>食堂意见反馈系统</title>
+
+    <link rel="stylesheet" href="/webjars/bootstrap/4.5.0/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/comm.css">
+
+    <script src="/webjars/jquery/3.5.1/jquery.js"></script>
+    <script src="/webjars/bootstrap/4.5.0/js/bootstrap.js"></script>
+    <script src="/js/net.js"></script>
+
+    <style>
+        .list-layout {
+            background: #cae4f8;
+        }
+
+        .list {
+            width: 680px;
+            /*max-height: 68vh;*/
+            /*overflow: scroll;*/
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-gap: 8px;
+            grid-template-rows: repeat(auto-fill, auto);
+        }
+
+        .item {
+            border: 1px solid gray;
+            border-radius: 8px;
+            box-sizing: border-box;
+            padding: 12px;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            grid-template-rows: auto auto 1fr;
+            grid-column-gap: 12px;
+            grid-template-areas: "head name" "head time" "head dish" "head content" "head images" "head video" "head feedback" "head .";
+        }
+
+        .head {
+            grid-area: head;
+            width: 64px;
+            height: 64px;
+            border-radius: 32px;
+            border: gray solid 1px;
+        }
+
+        .name {
+            /*margin-top: 6px;*/
+            grid-area: name;
+            line-height: 28px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .type{
+            line-height: 28px;
+            font-size: 14px;
+            /*font-weight: normal;*/
+            color: gray;
+        }
+
+        .time {
+            line-height: 28px;
+            grid-area: time;
+            color: gray;
+            font-size: 13px;
+        }
+
+        .dish {
+            grid-area: dish;
+            font-size: 15px;
+        }
+
+        .content {
+            margin-top: 4px;
+            grid-area: content;
+            color: #222;
+            font-size: 14px;
+        }
+
+        .images {
+            margin-top: 8px;
+            grid-area: images;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            width: 420px;
+            grid-gap: 4px;
+        }
+
+        .video {
+            font-weight: bold;
+            font-size: 14px;
+            grid-area: video;
+            margin-top: 4px;
+            /*margin-bottom: 4px;*/
+        }
+
+        .image {
+            width: 137px;
+            height: 137px;
+            object-fit: cover;
+            pointer-events: fill;
+            /*cursor: pointer;*/
+        }
+
+        .feedback {
+            margin: 8px;
+            grid-area: feedback;
+        }
+    </style>
+
+    <script>
+        function select() {
+            var i = $("select").val()
+            window.location.href = "/canteen/opinion?status=" + i
+        }
+
+        function goFeedback(id) {
+            $("#gofeedback").modal("toggle");
+            $("#gfb-post").on("click", function () {
+                net.post({
+                    url: "/canteen/feedback",
+                    data: {
+                        opinionId: id,
+                        content: $("#gfb-content").val()
+                    },
+                    toast: true,
+                    reload: true,
+                    success: function () {
+                        alert("反馈成功")
+                    }
+                })
+            });
+        }
+
+        function showFeedback(feedbackId) {
+            $("#feedback").modal("toggle");
+            net.get({
+                url: "/canteen/feedback/" + feedbackId,
+                toast: true,
+                success: function (feedback) {
+                    $("#fb-content").val(feedback.content)
+                }
+            })
+        }
+    </script>
+</head>
+<body>
+
+<div th:replace="common/canteen::navbar"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div th:replace="common/canteen::sidebarMenu"></div>
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">师生意见意见列表</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <select class="form-control" onchange="select()">
+                        <option value="0">待反馈</option>
+                        <option value="1">已反馈</option>
+                        <option value="2">全部</option>
+                    </select>
+                </div>
+            </div>
+            <div class="list">
+                <div class="item" th:each="l:${list}">
+                    <img class="head" th:src="${l.createByHead}"/>
+                    <div class="name">
+                        [[${l.createByName}]]&nbsp;
+                        <span class="type">
+                            ([[${l.createByType}]])
+                        </span>
+                    </div>
+                    <div class="time" th:text="${l.translateDate()}"></div>
+                    <div class="dish">
+                        <b>
+                            <a th:href="'/canteen/stall/update/'+${l.stallId}" target="_blank">#[[${l.stallName}]]#</a>
+                            <a th:href="'/canteen/dish/update/'+${l.dishId}" target="_blank">#[[${l.dishName}]]#</a>
+                        </b>
+                    </div>
+                    <div class="content" th:text="${l.content}"></div>
+                    <div class="images">
+                        <div th:if="${!l.images.urls.isEmpty()}" th:each="image:${l.images.urls}">
+                            <a th:href="${image}" target="_blank">
+                                <img class="image" th:src="${image}">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="video">
+                        <div th:if="${l.video}!=null">
+                            <a th:href="${l.video}" target="_blank">此建议包含一个视频 点击查看视频</a>
+                        </div>
+                    </div>
+                    <div class="feedback">
+                        <div th:if="${l.feedbackId}==null">
+                            <b style="margin: 8px" class="text-danger">未反馈</b>
+                            <button type="button" class="btn btn-primary" th:onclick="goFeedback([[${l.id}]])">反馈
+                            </button>
+                        </div>
+                        <div th:if="${l.feedbackId}!=null">
+                            <b style="margin: 8px" class="text-secondary">已反馈</b>
+                            <button type="button" class="btn btn-primary"
+                                    th:onclick="showFeedback([[${l.feedbackId}]])">查看反馈
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top: 8px">
+                <div th:replace="common/canteen::page"></div>
+            </div>
+        </main>
+    </div>
+</div>
+
+</body>
+<div class="modal fade" id="gofeedback" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">反馈</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <textarea class="form-control" rows="8" placeholder="请填写反馈内容" id="gfb-content"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="gfb-post">提交</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="feedback" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">查看反馈</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <textarea class="form-control" rows="8" id="fb-content" readonly></textarea>
+            </div>
+            <div class="modal-footer">
+<!--                <button type="button" class="btn btn-primary">提交</button>-->
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+</html>
+
+<script>
+    var status = [[${status}]]
+    $("option[value=" + status + "]").prop("selected", true)
+</script>

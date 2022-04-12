@@ -1,0 +1,23 @@
+body {
+    background: gainsboro;
+    margin: 0;
+    padding: 0;
+}
+
+.root {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-column-gap: 10px;
+    height: 100vh;
+}
+
+.left-nav {
+    background: white;
+    margin: 0;
+    width: 180px;
+    padding-top: 20px;
+}
+
+.content {
+    background: white;
+}

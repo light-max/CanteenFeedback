@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 public class TeacherInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        Object admin = request.getSession().getAttribute("teacher");
+        Object admin = request.getSession().getAttribute("account");
         if (admin == null) {
             response.sendRedirect("/teacher/notloggedin");
             return false;

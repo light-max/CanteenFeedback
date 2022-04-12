@@ -1,0 +1,104 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>食堂意见反馈系统</title>
+
+    <link rel="stylesheet" href="/webjars/bootstrap/4.5.0/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/admin.css">
+
+    <script src="/webjars/jquery/3.5.1/jquery.js"></script>
+    <script src="/webjars/bootstrap/4.5.0/js/bootstrap.js"></script>
+    <script src="/js/net.js"></script>
+
+    <style>
+    </style>
+    <script>
+        function post() {
+            net.post({
+                url: "/canteen/dish",
+                toast: true,
+                data: {
+                    stallId: $("#stallId").val(),
+                    name: $("#name").val(),
+                    cuisine: $("#cuisine").val(),
+                    des: $("#des").val(),
+                    material: $("#material").val()
+                },
+                success: function (o) {
+                    window.location.href = '/canteen/dish/update/' + o.id
+                }
+            })
+        }
+
+        function openStallDetails() {
+            window.location.href = "/canteen/dish?stallId="
+                + $("#stallId").val()
+        }
+    </script>
+</head>
+<body>
+
+<div th:replace="common/canteen::navbar"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div th:replace="common/canteen::sidebarMenu"></div>
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">添加菜品</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <button type="button" class="btn btn-sm btn-outline-primary"
+                            onclick="openStallDetails()">回到档口
+                    </button>
+                </div>
+            </div>
+            <div style="width: 600px">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width: 100px" class="input-group-text">档口ID</span>
+                    </div>
+                    <input id="stallId" type="text" class="form-control" aria-label="Amount (to the nearest dollar)"
+                           readonly
+                           th:value="${stall.id}">
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-append">
+                        <span style="width: 100px" class="input-group-text">档口名称</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)" readonly
+                           th:value="${stall.name}">
+                </div>
+                <div class="row">
+                    <div class="col col-md-8">
+                        <b>菜品名称</b><br>
+                        <input id="name" style="margin-top: 8px;width:100%" class="form-control form-text" type="text"
+                               placeholder="请输入菜品名称">
+                        <br>
+                    </div>
+                    <div class="col col-md-4">
+                        <b>菜系</b><br>
+                        <select style="margin-top: 8px" class="form-control block" id="cuisine">
+                            <option th:each="cuisine:${cuisines}"
+                                    th:text="${cuisine.name}"
+                                    th:value="${cuisine.id}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <b>菜品简介</b><br>
+                <textarea id="des" style="margin-top: 8px;width:100%" rows="6" class="form-control"
+                          placeholder="请输入菜品简介"></textarea>
+                <br>
+                <b>菜品原材料</b><br>
+                <textarea id="material" style="margin-top: 8px;width:100%" rows="6" class="form-control"
+                          placeholder="请输入菜品原材料"></textarea>
+                <br>
+                <button type="button" class="btn btn-primary btn-block" onclick="post()">提交</button>
+            </div>
+        </main>
+    </div>
+</div>
+
+</body>
+</html>

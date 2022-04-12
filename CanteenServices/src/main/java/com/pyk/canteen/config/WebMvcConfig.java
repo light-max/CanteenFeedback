@@ -1,9 +1,6 @@
 package com.pyk.canteen.config;
 
-import com.pyk.canteen.config.interceptor.AdminInterceptor;
-import com.pyk.canteen.config.interceptor.GlobalInterceptor;
-import com.pyk.canteen.config.interceptor.StudentInterceptor;
-import com.pyk.canteen.config.interceptor.TeacherInterceptor;
+import com.pyk.canteen.config.interceptor.*;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
@@ -17,21 +14,29 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .addPathPatterns("/admin/**")
                 .excludePathPatterns("/admin/login")
                 .excludePathPatterns("/admin/notloggedin");
+        registry.addInterceptor(new CanteenInterceptor())
+                .addPathPatterns("/canteen/**")
+                .excludePathPatterns("/canteen/login")
+                .excludePathPatterns("/canteen/notloggedin");
         registry.addInterceptor(new TeacherInterceptor())
-                .addPathPatterns("/teacher/**")
-                .excludePathPatterns("/teacher/login")
-                .excludePathPatterns("/teacher/notloggedin");
+                .addPathPatterns("/t/**")
+                .excludePathPatterns("/t/login")
+                .excludePathPatterns("/t/notloggedin");
         registry.addInterceptor(new StudentInterceptor())
-                .addPathPatterns("/student/**")
-                .excludePathPatterns("/student/login")
-                .excludePathPatterns("/student/notloggedin");
+                .addPathPatterns("/s/**")
+                .excludePathPatterns("/s/login")
+                .excludePathPatterns("/s/notloggedin");
         registry.addInterceptor(new GlobalInterceptor())
                 .addPathPatterns("/**");
+        registry.addInterceptor(new ApiInterceptor())
+                .addPathPatterns("/api/**")
+                .excludePathPatterns("/api/login")
+                .excludePathPatterns("/api/notloggedin");
     }
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/admin").setViewName("/admin/home");
-        registry.addViewController("/teacher").setViewName("/teacher/home");
+        registry.addViewController("/canteen").setViewName("/canteen/home");
     }
 }
