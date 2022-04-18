@@ -1,0 +1,133 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>食堂意见反馈系统</title>
+
+    <link rel="stylesheet" href="/webjars/bootstrap/4.5.0/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/comm.css">
+
+    <script src="/webjars/jquery/3.5.1/jquery.js"></script>
+    <script src="/webjars/bootstrap/4.5.0/js/bootstrap.js"></script>
+    <script src="/js/net.js"></script>
+
+    <style>
+
+    </style>
+
+    <script>
+        function setUserInfo() {
+            net.put({
+                url: "/admin/account/teacher",
+                data: {
+                    uid: $("#id").val(),
+                    name: $("#name").val(),
+                    gender: $("input[name=gender]:checked").val(),
+                    phone: $("#phone").val(),
+                    des: $("#des").val()
+                },
+                toast: true,
+                reload: true,
+                success: function () {
+                    alert("修改成功")
+                }
+            })
+        }
+
+        function setPwd() {
+            net.post({
+                url: "/admin/account/password/teacher",
+                data: {
+                    uid: $("#id").val(),
+                    pwd: $("#pwd").val()
+                },
+                toast: true,
+                reload: true,
+                success: function () {
+                    alert("修改成功")
+                }
+            })
+        }
+
+        function delt() {
+            if (confirm("你确定要删除这个账号吗?")) {
+                net.delete({
+                    url: "/admin/account",
+                    data: {
+                        uid: $("#id").val(),
+                        type: 2
+                    },
+                    toast: true,
+                    success: function () {
+                        window.location.href = "/admin/account"
+                    }
+                })
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div th:replace="common/admin::navbar"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div th:replace="common/admin::sidebarMenu"></div>
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h3">修改教师信息</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                </div>
+            </div>
+            <div style="display: grid;grid-template-columns: auto auto 1fr;grid-column-gap: 32px">
+                <div style="width: 600px">
+                    <b>账号（不可修改）</b>
+                    <input style="margin-top: 8px;margin-bottom: 16px"
+                           class="form-control" th:value="${account.uid}" id="id" readonly>
+                    <b>教师姓名</b>
+                    <input style="margin-top: 8px;margin-bottom: 16px"
+                           id="name" class="form-control" th:value="${teacher.name}">
+                    <b>教师性别</b><br>
+                    <div class="form-check form-check-inline" style="margin-bottom: 8px">
+                        <input type="radio" class="form-check-input" name="gender" id="s1" value="0">
+                        <label class="form-check-label" for="s1">隐藏</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input type="radio" class="form-check-input" name="gender" id="s2" value="1">
+                        <label class="form-check-label" for="s2">男</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input type="radio" class="form-check-input" name="gender" id="s3" value="2">
+                        <label class="form-check-label" for="s3">女</label>
+                    </div>
+                    <br>
+                    <b>电话号码</b>
+                    <input style="margin-top: 8px;margin-bottom: 8px"
+                           id="phone" class="form-control" th:value="${teacher.phone}">
+                    <b>描述</b>
+                    <textarea style="margin-top: 8px;margin-bottom: 16px" class="form-control" rows="4"
+                              th:text="${teacher.des}" id="des">
+                    </textarea>
+                    <button type="button" class="btn btn-primary btn-block" onclick="setUserInfo()">保存用户信息</button>
+                    <br>
+                </div>
+                <div style="width: 600px">
+                    <b>密码</b>
+                    <input type="password" style="margin-top: 8px;margin-bottom: 16px" id="pwd" class="form-control">
+                    <button type="button" class="btn btn-primary btn-block" onclick="setPwd()">保存密码</button>
+                    <hr>
+                    <button type="button" class="btn btn-danger btn-block" onclick="delt()">删除账号</button>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+</body>
+</html>
+
+<script>
+    var gender = [[${teacher.gender}]]
+    $("input:radio[name=gender]")[gender].checked = true
+</script>

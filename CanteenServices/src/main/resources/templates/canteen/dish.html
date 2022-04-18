@@ -85,6 +85,90 @@
             display: grid;
             grid-template-rows: auto auto 1fr;
         }
+
+        /*================================================*/
+        .c-item {
+            display: grid;
+            grid-template-areas: "head name" "head uid";
+            grid-template-columns: auto 1fr;
+            grid-column-gap: 8px;
+        }
+
+        .c-head {
+            grid-area: head;
+            width: 48px;
+            height: 48px;
+            border: 1px solid gray;
+            border-radius: 24px;
+        }
+
+        .c-name {
+            grid-area: name;
+            display: flex;
+            align-items: flex-end;
+            font-size: 16px;
+            color: black;
+        }
+
+        .c-uid {
+            grid-area: uid;
+            display: flex;
+            align-items: flex-start;
+            font-size: 12px;
+            color: gray;
+        }
+
+        /*================================================*/
+        .r-item {
+            display: grid;
+            grid-template-areas: "head name uid" "head content content" "head time time" "head reply reply";
+            grid-template-columns: auto auto 1fr;
+            grid-column-gap: 16px;
+            align-items: center;
+            grid-row-gap: 4px;
+        }
+
+        .r-head {
+            grid-area: head;
+            width: 48px;
+            height: 48px;
+            border: 1px solid gray;
+            border-radius: 24px;
+        }
+
+        .r-name {
+            grid-area: name;
+            display: flex;
+            align-items: flex-end;
+            font-size: 14px;
+            color: black;
+            font-weight: bold;
+        }
+
+        .r-uid {
+            grid-area: uid;
+            display: flex;
+            align-items: flex-start;
+            font-size: 13px;
+            color: gray;
+        }
+
+        .r-content {
+            grid-area: content;
+            font-size: 14px;
+        }
+
+        .r-time {
+            grid-area: time;
+            font-size: 12px;
+            color: gray;
+        }
+
+        .r-reply {
+            grid-area: reply;
+            font-size: 13px;
+        }
+
     </style>
 
     <script>
@@ -99,6 +183,160 @@
 
         function openDishAdd(stallId) {
             location.href = '/canteen/dish/add/' + stallId
+        }
+
+        function openCollectDlg(dishId) {
+            $("#c-list").html("");
+            $("#collect").modal("toggle");
+            net.get({
+                url: "/collect/count?dishId=" + dishId,
+                toast: true,
+                success: function (number) {
+                    $("#c-number").text(`${number}人已收藏`)
+                }
+            })
+
+            function append(pager) {
+                pager.data.forEach(i => {
+                    $("#c-list").append(`<div class="c-item">
+                            <img class="c-head" src="${i.head}"/>
+                            <div class="c-name">${i.name}</div>
+                            <div class="c-uid">${i.uid}</div>
+                        </div>
+                        <hr>`);
+                })
+            }
+
+            var p = null
+
+            net.get({
+                url: "/collect/list?dishId=" + dishId,
+                toast: true,
+                success: function (pager) {
+                    append(pager)
+                    p = pager['pager']
+                    $("#c-more").unbind("click").click(function () {
+                        if (p != null && p['currentPage'] === p['pageCount']) {
+                            alert("没有更多了")
+                        } else {
+                            net.get({
+                                url: `/collect/list/${p['currentPage'] + 1}?dishId=${dishId}`,
+                                toast: true,
+                                success: function (pager) {
+                                    append(pager)
+                                    p = pager['pager']
+                                }
+                            })
+                        }
+                    })
+                }
+            })
+        }
+
+        function openRemarkDlg(dishId) {
+            $("#r-list").html("")
+            $("#remark").modal("toggle")
+
+            net.get({
+                url: "/remark/count?dishId=" + dishId,
+                toast: true,
+                success: function (number) {
+                    $("#r-number").text(`${number}条评论`)
+                }
+            })
+
+            function getReplyCountHtml(remarkId, count) {
+                if (count === 0) {
+                    return `<div class="r-reply"></div>`
+                } else {
+                    return `<div class="r-reply">
+                            <span>${count}条回复</span>&nbsp;&nbsp;
+                            <a href="#" class="btn-link" onclick="openReplyDlg(${remarkId})">点击查看</a>
+                        </div>`
+                }
+            }
+
+            function append(pager) {
+                pager.data.forEach(i => {
+                    $("#r-list").append(`<div class="r-item">
+                        <img class="r-head" src="${i['createByHead']}">
+                        <div class="r-name">${i['createByName']}</div>
+                        <div class="r-uid">${i['createById']}</div>
+                        <div class="r-content">${i['content']}</div>
+                        <div class="r-time">${i['createTimeText']}</div>
+                        ${getReplyCountHtml(i['id'], i['replyCount'])}
+                    </div>
+                    <hr>`)
+                })
+            }
+
+            var p = null
+
+            net.get({
+                url: "/remark/list?dishId=" + dishId,
+                toast: true,
+                success: function (pager) {
+                    append(pager)
+                    p = pager['pager']
+                    $("#r-more").unbind("click").click(function () {
+                        if (p != null && p['currentPage'] === p['pageCount']) {
+                            alert("没有更多了")
+                        } else {
+                            net.get({
+                                url: `/remark/list/${p['currentPage'] + 1}?dishId=${dishId}`,
+                                toast: true,
+                                success: function (pager) {
+                                    append(pager)
+                                    p = pager['pager']
+                                }
+                            })
+                        }
+                    })
+                }
+            })
+        }
+
+        function openReplyDlg(remarkId) {
+            $("#rp-list").html("")
+            $("#reply").modal("toggle")
+
+            function append(pager) {
+                pager.data.forEach(i => {
+                    $("#rp-list").append(`<div class="r-item">
+                        <img class="r-head" src="${i['createByHead']}">
+                        <div class="r-name">${i['createByName']}</div>
+                        <div class="r-uid">${i['createById']}</div>
+                        <div class="r-content">${i['content']}</div>
+                        <div class="r-time">${i['createTimeText']}</div>
+                    </div>
+                    <hr>`)
+                })
+            }
+
+            var p = null
+
+            net.get({
+                url: "/remark/list?parentId=" + remarkId,
+                toast: true,
+                success: function (pager) {
+                    append(pager)
+                    p = pager['pager']
+                    $("#rp-more").unbind("click").click(function () {
+                        if (p != null && p['currentPage'] === p['pageCount']) {
+                            alert("没有更多了")
+                        } else {
+                            net.get({
+                                url: `/remark/list/${p['currentPage'] + 1}?parentId=${remarkId}`,
+                                toast: true,
+                                success: function (pager) {
+                                    append(pager)
+                                    p = pager['pager']
+                                }
+                            })
+                        }
+                    })
+                }
+            })
         }
     </script>
 </head>
@@ -147,10 +385,22 @@
                     </div>
                     <div class="nav">
                         <div>
-                            <a href="#" class="btn-link">意见</a>
+<!--                            <a href="#" class="btn-link font-weight-bold"-->
+<!--                            >-->
+<!--                                查看意见-->
+<!--                            </a>-->
                         </div>
                         <div>
-                            <a href="#" class="btn-link">评论</a>
+                            <a href="#" class="btn-link font-weight-bold"
+                               th:onclick="openRemarkDlg([[${l.id}]])">
+                                查看评论
+                            </a>
+                        </div>
+                        <div>
+                            <a href="#" class="btn-link font-weight-bold"
+                               th:onclick="openCollectDlg([[${l.id}]])">
+                                查看收藏
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -159,6 +409,73 @@
                 <div th:replace="common/canteen::page"></div>
             </div>
         </main>
+    </div>
+</div>
+
+<div class="modal fade" id="collect" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    收藏列表
+                </h5>&nbsp;&nbsp;
+                <div style="line-height: 32px;color: blue" id="c-number"></div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="height: 70vh;overflow: scroll">
+                <div id="c-list"></div>
+                <div class="text-center">
+                    <a href="#" class="btn-link" id="c-more">加载更多</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="remark" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    评论列表
+                </h5>&nbsp;&nbsp;
+                <div style="line-height: 32px;color: blue" id="r-number"></div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="height: 70vh;overflow: scroll">
+                <div id="r-list">
+                </div>
+                <div class="text-center">
+                    <a href="#" class="btn-link" id="r-more">加载更多</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="reply" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    回复列表
+                </h5>&nbsp;&nbsp;
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="height: 70vh;overflow: scroll">
+                <div id="rp-list">
+                </div>
+                <div class="text-center">
+                    <a href="#" class="btn-link" id="rp-more">加载更多</a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

@@ -110,8 +110,13 @@
                 <button data-dismiss="modal" class="btn btn-primary btn-block"
                         data-toggle="modal" data-target="#canteenAccount">食堂账号
                 </button>
-                <button class="btn btn-primary btn-block">教师账号</button>
-                <button class="btn btn-primary btn-block">学生账号</button>
+                <button class="btn btn-primary btn-block"
+                        onclick="window.location.href='/admin/account/add/teacher'">
+                    教师账号
+                </button>
+                <button class="btn btn-primary btn-block"
+                        onclick="window.location.href='/admin/account/add/student'">学生账号
+                </button>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>

@@ -2,6 +2,7 @@ package com.pyk.canteen.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.pyk.canteen.model.AccountAddRequest;
 import com.pyk.canteen.model.entity.Account;
 import com.pyk.canteen.model.td.AccountTD;
 
@@ -21,4 +22,14 @@ public interface AccountService extends IService<Account> {
     void delete(String uid, Integer type);
 
     void addCanteen(String uid, String pwd);
+
+    void setAccountPwd(String uid, String pwd);
+
+    void setTeacherInfo(String uid, String name, Integer gender, String phone, String des);
+
+    void setStudentInfo(String uid, String name, Integer gender, String phone, String des);
+
+    void addStudentList(List<AccountAddRequest> list);
+
+    void addTeacherList(List<AccountAddRequest> list);
 }

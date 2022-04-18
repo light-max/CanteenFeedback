@@ -1,0 +1,141 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>食堂意见反馈系统</title>
+
+    <link rel="stylesheet" href="/webjars/bootstrap/4.5.0/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/comm.css">
+
+    <script src="/webjars/jquery/3.5.1/jquery.js"></script>
+    <script src="/webjars/bootstrap/4.5.0/js/bootstrap.js"></script>
+    <script src="/js/net.js"></script>
+
+    <style>
+        .layout {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            grid-column-gap: 16px;
+        }
+
+        .left {
+
+        }
+
+        .right {
+
+        }
+
+        .item {
+            display: grid;
+            grid-template-columns: 80px 240px 240px 140px 80px;
+            text-align: center;
+        }
+
+        .head {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .item > div {
+            border: 1px solid gray;
+            line-height: 40px;
+            height: 40px;
+        }
+
+        .item > input {
+            height: 40px;
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+
+        #list {
+            height: 70vh;
+            overflow: scroll;
+        }
+
+        .dlt {
+            cursor: pointer;
+            color: red;
+        }
+    </style>
+
+    <script>
+        var index = 0
+
+        function addItem() {
+            var id = ++index;
+            $("#list").append(`<div class="item" id="${id}">
+                            <div class="id">${id}</div>
+                            <input class="uid" type="text" placeholder="请输入账号">
+                            <input class="pwd" type="password" placeholder="请输入密码">
+                            <input class="name" type="text" placeholder="请输入姓名">
+                            <div class="dlt">删除</div>
+                        </div>`)
+            $("#" + id).find(".dlt").on("click", function () {
+                $("#" + id).remove()
+            })
+        }
+
+        function postAll() {
+            var list = []
+            $(".item:not(.head)").each(function (i, obj) {
+                var o = $(obj)
+                list.push({
+                    index: o.children(".id").text(),
+                    uid: o.children(".uid").val(),
+                    pwd: o.children(".pwd").val(),
+                    name: o.children(".name").val(),
+                })
+            })
+            net.post({
+                url: "/admin/account/teacher/list",
+                json: list,
+                toast: true,
+                reload: true,
+                success: function () {
+                    alert("添加成功")
+                }
+            })
+        }
+    </script>
+</head>
+<body>
+
+<div th:replace="common/admin::navbar"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div th:replace="common/admin::sidebarMenu"></div>
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">添加教师账号</h1>
+            </div>
+            <div class="layout">
+                <div class="left">
+                    <div class="head item">
+                        <div>序号</div>
+                        <div>账号</div>
+                        <div>密码</div>
+                        <div>姓名</div>
+                        <div>操作</div>
+                    </div>
+                    <div id="list">
+                    </div>
+                </div>
+                <div class="right">
+                    <button type="button" class="btn btn-primary" onclick="addItem()">添加条目</button>
+                    <br><br>
+                    <button type="button" class="btn btn-primary" onclick="postAll()">提交全部</button>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+</html>
+
+<script>
+
+</script>
