@@ -22,6 +22,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.login.LoginActivity"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity
+            android:name=".ui.register.RegisterActivity"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity android:name=".ui.home.HomeActivity" />
+        <activity android:name=".ui.dish.DishActivity" />
+        <activity android:name=".ui.home.opinionsend.OpinionSendActivity" />
     </application>
 
 </manifest>

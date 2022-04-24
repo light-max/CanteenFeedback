@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">CanteenAndroid</string>
+    <string-array name="role">
+        <item>学生</item>
+        <item>教师</item>
+    </string-array>
+    <string name="no_account_go_reigster">
+        <u>没有账号?去注册</u>
+    </string>
 </resources>

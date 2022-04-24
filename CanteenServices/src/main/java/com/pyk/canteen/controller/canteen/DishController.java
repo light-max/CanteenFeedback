@@ -9,6 +9,7 @@ import com.pyk.canteen.model.data.Result;
 import com.pyk.canteen.model.entity.Cuisine;
 import com.pyk.canteen.model.entity.Dish;
 import com.pyk.canteen.model.entity.Stall;
+import com.pyk.canteen.model.result.DishDetails;
 import com.pyk.canteen.model.result.Images;
 import com.pyk.canteen.service.DishService;
 import com.pyk.canteen.service.StallService;
@@ -96,5 +97,11 @@ public class DishController {
             String des, String material, Boolean enable
     ) {
         return Result.success(service.update(id, name, cid, des, material, enable));
+    }
+
+    @GetMapping("/dish/details/{id}")
+    @ResponseBody
+    public Result<DishDetails> getDetails(@PathVariable Integer id) {
+        return Result.success(service.getDishDetails(id));
     }
 }

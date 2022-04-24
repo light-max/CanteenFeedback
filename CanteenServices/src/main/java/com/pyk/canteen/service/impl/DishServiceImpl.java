@@ -5,10 +5,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.pyk.canteen.constant.GlobalConstant;
 import com.pyk.canteen.controller.ResourceController;
+import com.pyk.canteen.mapper.CuisineMapper;
 import com.pyk.canteen.mapper.DishMapper;
 import com.pyk.canteen.mapper.StallMapper;
 import com.pyk.canteen.model.entity.Dish;
 import com.pyk.canteen.model.entity.Stall;
+import com.pyk.canteen.model.result.DishDetails;
 import com.pyk.canteen.model.result.Images;
 import com.pyk.canteen.model.td.DishTD;
 import com.pyk.canteen.service.DishService;
@@ -25,6 +27,9 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
 
     @Resource
     ResourceController resourceController;
+
+    @Resource
+    CuisineMapper cuisineMapper;
 
     @Override
     public Page<Dish> query(Integer stallId, Integer n) {
@@ -85,5 +90,26 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
                         .build());
             }
         }};
+    }
+
+    @Override
+    public DishDetails getDishDetails(int id) {
+        Dish dish = getById(id);
+        Stall stall = stallMapper.selectById(dish.getSid());
+        Images images = resourceController.getImages("dish", dish.getId()).getData();
+        List<String> urls = images.getUrls();
+        return DishDetails.builder()
+                .id(dish.getId())
+                .stallId(stall.getId())
+                .cid(dish.getCid())
+                .name(dish.getName())
+                .des(dish.getDes())
+                .material(dish.getMaterial())
+                .stallName(stall.getName())
+                .stallDes(stall.getDes())
+                .cuisine(cuisineMapper.selectNameById(dish.getCid()))
+                .cover(urls.isEmpty() ? "/images/no-image.jpg" : urls.get(0))
+                .images(urls)
+                .build();
     }
 }

@@ -59,6 +59,11 @@ public abstract class SimpleSingleItemRecyclerAdapter<T> extends RecyclerView.Ad
         notifyDataSetChanged();
     }
 
+    public void addNewData(List<T> data) {
+        this.data.addAll(data);
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

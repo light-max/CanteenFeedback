@@ -54,15 +54,18 @@ public class RemarkServiceImpl extends ServiceImpl<RemarkMapper, Remark> impleme
                         .lambda()
                         .eq(Remark::getDishId, dishId)
                         .isNull(Remark::getParentId)
+                        .orderByDesc(Remark::getCreateTime)
         );
     }
 
     @Override
     public Page<Remark> getByParentId(Integer n, Integer parentId) {
-        return page(new Page<>(n == null ? 0 : n, 5),
+        return page(new Page<>(n == null ? 0 : n, 8),
                 new QueryWrapper<Remark>()
                         .lambda()
-                        .eq(Remark::getParentId, parentId));
+                        .eq(Remark::getParentId, parentId)
+                        .orderByDesc(Remark::getCreateTime)
+        );
     }
 
     @Override

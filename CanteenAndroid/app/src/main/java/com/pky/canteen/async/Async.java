@@ -11,11 +11,11 @@ public class Async implements RunToMainThread {
 
     private Thread mThread;
 
-    private List<Call.OnBefore> before = new ArrayList<>();
-    private List<Call.OnReturnData> success = new ArrayList<>();
-    private List<Call.OnSuccess> success2 = new ArrayList<>();
-    private List<Call.OnError> error = new ArrayList<>();
-    private List<Call.OnAfter> after = new ArrayList<>();
+    private final List<Call.OnBefore> before = new ArrayList<>();
+    private final List<Call.OnReturnData> success = new ArrayList<>();
+    private final List<Call.OnSuccess> success2 = new ArrayList<>();
+    private final List<Call.OnError> error = new ArrayList<>();
+    private final List<Call.OnAfter> after = new ArrayList<>();
 
     private AsyncTaskRunnable runnable;
     private Runnable runnable2;

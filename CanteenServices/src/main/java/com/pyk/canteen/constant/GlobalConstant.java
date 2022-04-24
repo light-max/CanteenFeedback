@@ -25,7 +25,7 @@ public enum GlobalConstant implements Assert {
 
     collectError("已收藏，不能重复收藏"),
 
-
+    menuItemExists("菜品已存在"),
     ;
 
     private String message;

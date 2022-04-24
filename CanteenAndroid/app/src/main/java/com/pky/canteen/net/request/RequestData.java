@@ -70,12 +70,26 @@ public class RequestData {
                 } else if (value instanceof Object[]) {
                     Object[] objects = (Object[]) value;
                     for (Object o : objects) {
-                        builder.addFormDataPart(key, o.toString());
+                        if (o instanceof File) {
+                            String absolutePath = ((File) o).getAbsolutePath();
+                            RequestBody r = RequestBody.create(MediaType.parse("application/octet-stream"),
+                                    new File(absolutePath));
+                            builder.addFormDataPart(key, absolutePath, r);
+                        } else {
+                            builder.addFormDataPart(key, o.toString());
+                        }
                     }
                 } else if (value instanceof Collection) {
                     Collection<?> list = (Collection<?>) value;
                     for (Object o : list) {
-                        builder.addFormDataPart(key, o.toString());
+                        if (o instanceof File) {
+                            String absolutePath = ((File) o).getAbsolutePath();
+                            RequestBody r = RequestBody.create(MediaType.parse("application/octet-stream"),
+                                    new File(absolutePath));
+                            builder.addFormDataPart(key, absolutePath, r);
+                        } else {
+                            builder.addFormDataPart(key, o.toString());
+                        }
                     }
                 } else if (value instanceof File) {
                     String absolutePath = ((File) value).getAbsolutePath();

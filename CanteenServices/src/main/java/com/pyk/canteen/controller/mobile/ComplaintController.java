@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 
 import javax.annotation.Resource;
 
-@Controller
+@Controller("mobile.complaint")
 public class ComplaintController {
     @Resource
     ComplaintService service;

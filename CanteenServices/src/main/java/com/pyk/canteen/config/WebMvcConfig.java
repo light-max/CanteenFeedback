@@ -21,10 +21,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(new TeacherInterceptor())
                 .addPathPatterns("/t/**")
                 .excludePathPatterns("/t/login")
+                .excludePathPatterns("/t/register")
                 .excludePathPatterns("/t/notloggedin");
         registry.addInterceptor(new StudentInterceptor())
                 .addPathPatterns("/s/**")
                 .excludePathPatterns("/s/login")
+                .excludePathPatterns("/s/register")
                 .excludePathPatterns("/s/notloggedin");
         registry.addInterceptor(new GlobalInterceptor())
                 .addPathPatterns("/**");

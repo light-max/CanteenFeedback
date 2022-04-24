@@ -10,7 +10,7 @@ public class TeacherInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         Object admin = request.getSession().getAttribute("account");
         if (admin == null) {
-            response.sendRedirect("/teacher/notloggedin");
+            response.sendRedirect("/api/notloggedin");
             return false;
         }
         return true;

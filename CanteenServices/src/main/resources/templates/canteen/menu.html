@@ -1,0 +1,343 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>食堂意见反馈系统</title>
+
+    <link rel="stylesheet" href="/webjars/bootstrap/4.5.0/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/admin.css">
+
+    <script src="/webjars/jquery/3.5.1/jquery.js"></script>
+    <script src="/webjars/bootstrap/4.5.0/js/bootstrap.js"></script>
+    <script src="/js/net.js"></script>
+
+    <style>
+        #dish-list {
+            justify-items: center;
+            display: grid;
+            grid-template-columns: repeat(4, auto);
+            grid-row-gap: 16px;
+        }
+
+        .dish-item {
+            border: 1px solid #eeeeee;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+
+        .d-cover {
+            /*cursor: pointer;*/
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: solid 1px gray;
+        }
+
+        .d-name {
+            margin-top: 6px;
+            margin-bottom: 6px;
+            font-weight: bold;
+            font-size: 14px;
+            color: black;
+        }
+
+        .d-name > a {
+            /*color: black;*/
+        }
+
+        .d-add {
+            display: flex;
+            color: black;
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 8px;
+            margin-bottom: 4px;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .d-hr {
+            margin: 0;
+        }
+
+        #list {
+            display: grid;
+            width: max-content;
+            min-width: 600px;
+            grid-template-columns: repeat(4, auto);
+            justify-items: center;
+            grid-row-gap: 16px;
+            grid-column-gap: 12px;
+            text-align: center;
+        }
+
+        .item {
+            /*display: grid;*/
+            border: 1px solid #eeeeee;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+
+        .cover {
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: solid 1px gray;
+        }
+
+        .name {
+            margin-top: 6px;
+            margin-bottom: 6px;
+            font-weight: bold;
+            font-size: 14px;
+            color: black;
+        }
+
+        .name > a {
+            color: black;
+        }
+
+        .remove {
+            margin-top: 6px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        var menuId = [[${menu.id}]]
+
+        function addToMenu(obj, dishId) {
+            net.post({
+                url: "/canteen/menu/item",
+                data: {
+                    menuId: [[${menu.id}]],
+                    dishId: dishId
+                },
+                toast: true,
+                success: function (dish) {
+                    $(obj).parent().remove()
+                    queryMenuItemCount()
+                }
+            })
+        }
+
+        function postDishToMenu() {
+            var ids = []
+            $("input[name=dish-item]:checked").each((i, o) => {
+                ids.push($(o).val())
+            })
+            if (ids.length > 0) {
+                net.post({
+                    url: "/canteen/menu/item/list",
+                    data: {
+                        menuId: [[${menu.id}]],
+                        dishIds: ids
+                    },
+                    toast: true,
+                    reload: true,
+                    success: function () {
+                        alert("添加成功")
+                    }
+                })
+            }
+        }
+
+        function selectAllDish(flag) {
+            $("input[name=dish-item]").prop("checked", flag)
+        }
+
+        function appendDishList(pager) {
+            pager.data.forEach(i => {
+                $("#dish-list").append(`<div class="dish-item">
+                        <img title="点击添加到菜单" class="d-cover" src="${i['cover']}"/>
+                        <div class="d-name">
+                            <a href="/canteen/dish/update/${i.id}" target="_blank">${i.name}</a>
+                        </div>
+                        <hr class="d-hr"/>
+                        <label style="width: 100%">
+                            <div class="d-add">
+                                <input type="checkbox" name="dish-item" value="${i['id']}">
+                                <div>选择</div>
+                            </div>
+                        </label>
+                    </div>`)
+            })
+        }
+
+        function addDish(menuId) {
+            $("#dishListLayout").modal("toggle");
+            $("#dish-list").html("")
+            var p = null
+            net.get({
+                url: "/canteen/addable/dish/list?menuId=" + menuId,
+                toast: true,
+                success: function (pager) {
+                    appendDishList(pager)
+                    p = pager['pager']
+                    $("#dish-more").unbind("click").click(function () {
+                        if (p != null && p['currentPage'] === p['pageCount']) {
+                            alert("没有更多了")
+                        } else {
+                            net.get({
+                                url: `/canteen/addable/dish/list/${p['currentPage'] + 1}?menuId=${menuId}`,
+                                toast: true,
+                                success: function (pager) {
+                                    appendDishList(pager)
+                                    p = pager['pager']
+                                }
+                            })
+                        }
+                    })
+                }
+            })
+        }
+
+        function selectDate(obj) {
+            window.location.href = "/canteen/menu?d=" + $(obj).val()
+        }
+
+    </script>
+</head>
+<body>
+
+<div th:replace="common/canteen::navbar"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div th:replace="common/canteen::sidebarMenu"></div>
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">
+                    每日菜单
+                    <span class="h5" id="menuItemCount"></span>
+                </h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <div style="height: 100%">
+                        <span style="line-height: 34px;font-weight: bold">日期选择：</span>
+                        <input style="height: 34px" type="date" id="date" th:value="${menu.date}"
+                               onchange="selectDate(this)">
+                    </div>
+                    &nbsp;&nbsp;
+                    <button type="button" class="btn btn-sm btn-outline-primary"
+                            th:onclick="addDish([[${menu.id}]])">添加菜品
+                    </button>
+                </div>
+            </div>
+            <div style="height: 70vh;overflow: scroll;width: max-content">
+                <div id="list">
+                </div>
+                <div class="text-center" style="margin-bottom: 12px">
+                    <br>
+                    <a href="#" id="item-more">加载更多</a>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<div class="modal fade" id="dishListLayout" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    添加菜品
+                </h5>&nbsp;&nbsp;
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center" style="height: 70vh;overflow: scroll">
+                <div id="dish-list">
+                </div>
+                <br>
+                <div class="text-center">
+                    <a href="#" class="btn-link" id="dish-more">加载更多</a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="postDishToMenu()">提交</button>
+                <button type="button" class="btn btn-secondary" onclick="selectAllDish(true)">全选</button>
+                <button type="button" class="btn btn-secondary" onclick="selectAllDish(false)">全不选</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+<script>
+    var menuId = [[${menu.id}]]
+
+    function queryMenuItemCount() {
+        net.get({
+            url: "/canteen/menu/item/count?menuId=" + [[${menu.id}]],
+            success: function (count) {
+                $("#menuItemCount").html(`共${count}项`)
+            }
+        })
+    }
+
+    queryMenuItemCount()
+
+    function removeMenuItem(itemId) {
+        if (confirm("你确定要移除这项菜品吗?")) {
+            net.delete({
+                url: "/canteen/menu/item",
+                data: {
+                    id: itemId
+                },
+                toast: true,
+                reload: true
+            })
+        }
+    }
+
+    function appendMenuItem(item) {
+        $("#list").append(`<div class="item">
+            <img class="cover" src="${item['dishCover']}"/>
+            <div class="name">
+                <a href="/canteen/dish/update/${item.dishId}"
+                    target="_blank">${item['dishName']}
+                </a>
+            </div>
+            <hr class="d-hr">
+            <div class="remove text-danger" onclick="removeMenuItem(${item.id})">移除</div>
+        </div>`)
+    }
+
+    function appendMenuItems(pager) {
+        pager.data.forEach(i => {
+            appendMenuItem(i)
+        })
+    }
+
+    var p = null
+    net.get({
+        url: "/canteen/menu/item/list?menuId=" + menuId,
+        toast: true,
+        success: function (pager) {
+            appendMenuItems(pager)
+            p = pager['pager']
+            $("#item-more").unbind("click").click(function () {
+                if (p != null && p['currentPage'] === p['pageCount']) {
+                    alert("没有更多了")
+                } else {
+                    net.get({
+                        url: `/canteen/menu/item/list/${p['currentPage'] + 1}?menuId=${menuId}`,
+                        toast: true,
+                        success: function (pager) {
+                            appendMenuItems(pager)
+                            p = pager['pager']
+                        }
+                    })
+                }
+            })
+        }
+    })
+</script>

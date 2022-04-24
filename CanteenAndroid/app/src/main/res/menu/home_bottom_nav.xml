@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/canteen"
+        android:icon="@drawable/ic_canteen"
+        android:title="食堂"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/message"
+        android:icon="@drawable/ic_message"
+        android:title="消息"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/mine"
+        android:icon="@drawable/ic_mine"
+        android:title="我的"
+        app:showAsAction="always" />
+</menu>
