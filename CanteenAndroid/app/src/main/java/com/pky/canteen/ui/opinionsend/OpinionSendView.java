@@ -1,4 +1,4 @@
-package com.pky.canteen.ui.home.opinionsend;
+package com.pky.canteen.ui.opinionsend;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
@@ -22,6 +22,7 @@ public class OpinionSendView extends BaseView<OpinionSendActivity> {
     @Override
     public void onCreate(Base base, Bundle savedInstanceState) {
         super.onCreate(base, savedInstanceState);
+        click(R.id.back, () -> this.base.finish());
         click(R.id.add_image, () -> this.base.picture());
         click(R.id.add_video, () -> this.base.video());
         click(R.id.remove_video, () -> {

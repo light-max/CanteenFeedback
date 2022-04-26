@@ -36,7 +36,7 @@ public class DishRemarkFragment extends BaseFragment<DishRemarkModel, DishRemark
 
         getModel().requestNewData().success(data -> {
             getV().getAdapter().setNewData(data.getList());
-            getV().getRecycler().setVisibility(data.getList().isEmpty() ? View.GONE : View.VISIBLE);
+            getV().getRecycler().setVisibility(data.getList().isEmpty() ? View.INVISIBLE : View.VISIBLE);
             getV().getEmpty().setVisibility(data.getList().isEmpty() ? View.VISIBLE : View.GONE);
 
             getV().getRecycler().addOnScrollListener(new OnLoadMoreListener(listener -> {

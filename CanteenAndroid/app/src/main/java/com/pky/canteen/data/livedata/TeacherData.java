@@ -13,4 +13,9 @@ public class TeacherData extends MutableLiveData<Teacher> {
         }
         return instance;
     }
+
+    public static TeacherData newInstance(){
+        instance = new TeacherData();
+        return instance;
+    }
 }

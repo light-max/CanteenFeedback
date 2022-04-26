@@ -53,42 +53,9 @@
 
     </LinearLayout>
 
-
-<!--    <androidx.cardview.widget.CardView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="0dp"-->
-<!--        android:layout_margin="8dp"-->
-<!--        android:layout_weight="1"-->
-<!--        app:cardCornerRadius="4dp"-->
-<!--        app:cardElevation="4dp">-->
-
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-<!--    </androidx.cardview.widget.CardView>-->
-
-<!--    <LinearLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:orientation="horizontal">-->
-
-<!--        <Button-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="收藏" />-->
-
-<!--        <Button-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="反馈" />-->
-
-<!--        <Button-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="评论" />-->
-
-<!--    </LinearLayout>-->
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

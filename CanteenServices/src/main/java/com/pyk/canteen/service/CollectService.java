@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.pyk.canteen.model.entity.Collect;
 import com.pyk.canteen.model.result.Collector;
+import com.pyk.canteen.model.result.DishDetails;
 
 import java.util.List;
 
@@ -17,4 +18,6 @@ public interface CollectService extends IService<Collect> {
     Page<Collect> list(Integer n, Integer dishId);
 
     List<Collector> getCollector(List<Collect> list);
+
+    List<DishDetails> getCollectAll(String uid);
 }

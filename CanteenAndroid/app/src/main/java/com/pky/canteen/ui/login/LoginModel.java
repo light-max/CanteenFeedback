@@ -13,12 +13,14 @@ public class LoginModel extends BaseModel<LoginActivity> {
         if (isStudent) {
             async = Api.sLogin(username, password)
                     .success(data -> {
-                        StudentData.getInstance().postValue(data);
+                        StudentData.newInstance().postValue(data);
+                        TeacherData.newInstance();
                     });
         } else {
             async = Api.tLogin(username, password)
                     .success(data -> {
-                        TeacherData.getInstance().postValue(data);
+                        StudentData.newInstance();
+                        TeacherData.newInstance().postValue(data);
                     });
         }
         async.before(() -> base.getView().showDialog())

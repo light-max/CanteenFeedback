@@ -112,4 +112,30 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
                 .images(urls)
                 .build();
     }
+
+    @Override
+    public Page<Dish> list(Integer stallId, Integer n) {
+        int size = 4;
+        if (n == null || n <= 1) {
+            size = 8;
+        }
+        if (stallId == null) {
+            return page(new Page<>(n == null ? 0 : n, size));
+        } else {
+            return page(new Page<>(n == null ? 0 : n, size),
+                    new QueryWrapper<Dish>()
+                            .lambda()
+                            .eq(Dish::getSid, stallId)
+            );
+        }
+    }
+
+    @Override
+    public List<DishDetails> getDishDetailsList(List<Dish> list) {
+        return new ArrayList<DishDetails>() {{
+            for (Dish dish : list) {
+                add(getDishDetails(dish.getId()));
+            }
+        }};
+    }
 }

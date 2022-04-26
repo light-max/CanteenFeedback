@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginBottom="8dp"
+    android:orientation="vertical"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="12dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="8dp">
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_feedback_msg" />
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/opinion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"
+                    tools:text="建议：这个菜品不太新鲜了啊" />
+
+                <TextView
+                    android:id="@+id/feedback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"
+                    tools:text="回复：不好意思，由于疫情原因无法购买到新鲜猪肉" />
+
+                <TextView
+                    android:id="@+id/time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="12sp"
+                    tools:text="2022年04月25日 21:05:12" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/no_reading"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_gravity="end|top"
+                android:src="@drawable/ic_no_reading" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

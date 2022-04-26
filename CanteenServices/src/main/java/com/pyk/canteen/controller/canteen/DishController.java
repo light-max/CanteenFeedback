@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.pyk.canteen.controller.ResourceController;
 import com.pyk.canteen.mapper.CuisineMapper;
 import com.pyk.canteen.model.data.Pager;
+import com.pyk.canteen.model.data.PagerData;
 import com.pyk.canteen.model.data.Result;
 import com.pyk.canteen.model.entity.Cuisine;
 import com.pyk.canteen.model.entity.Dish;
@@ -56,6 +57,22 @@ public class DishController {
         model.addAttribute("list", service.getDishTD(list));
         model.addAttribute("pager", pager);
         return "/canteen/dish";
+    }
+
+    @GetMapping({"/dish/list", "/dish/list/{n}"})
+    @ResponseBody
+    public Result<PagerData> getDishList(
+            @PathVariable(required = false) Integer n,
+            @RequestParam(required = false) Integer stallId
+    ) {
+        Page<Dish> page = service.list(stallId, n);
+        List<Dish> records = page.getRecords();
+        List<DishDetails> list = service.getDishDetailsList(records);
+        Pager pager = new Pager(page, "/dish/list");
+        if (stallId != null) {
+            pager.setTailAppend("?stallId=" + stallId);
+        }
+        return Result.success(new PagerData(pager, list));
     }
 
     @GetMapping({"/canteen/dish/add/{stallId}"})

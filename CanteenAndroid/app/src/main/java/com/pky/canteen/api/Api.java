@@ -2,9 +2,13 @@ package com.pky.canteen.api;
 
 import com.pky.canteen.async.Async;
 import com.pky.canteen.data.result.CollectorPager;
+import com.pky.canteen.data.result.Cuisine;
 import com.pky.canteen.data.result.DishDetails;
+import com.pky.canteen.data.result.DishDetailsPager;
+import com.pky.canteen.data.result.FeedbackMsg;
 import com.pky.canteen.data.result.MenuItemPager;
 import com.pky.canteen.data.result.RemarkPager;
+import com.pky.canteen.data.result.StallDetails;
 import com.pky.canteen.data.result.Student;
 import com.pky.canteen.data.result.Teacher;
 import com.pky.canteen.net.request.RequestBuilder;
@@ -61,6 +65,21 @@ public class Api {
                 .path("id", id)
                 .<ExRequestBuilder>as()
                 .async(DishDetails.class);
+    }
+
+    public static Async.Builder<DishDetailsPager> getDishList(int page) {
+        return ExRequestBuilder.get("/dish/list/{n}")
+                .path("n", page)
+                .<ExRequestBuilder>as()
+                .async(DishDetailsPager.class);
+    }
+
+    public static Async.Builder<DishDetailsPager> getDishListByStallId(int page, int stallId) {
+        return ExRequestBuilder.get("/dish/list/{n}")
+                .path("n", page)
+                .param("stallId", stallId)
+                .<ExRequestBuilder>as()
+                .async(DishDetailsPager.class);
     }
 
     public static Async.Builder<RemarkPager> getRemarkList(int page, int dishId) {
@@ -152,5 +171,94 @@ public class Api {
             request.field("video", video);
         }
         return request.async();
+    }
+
+    public static Async.Builder<List<Cuisine>> getCuisineList() {
+        return ExRequestBuilder.get("/cuisine/list")
+                .<ExRequestBuilder>as()
+                .asyncList(Cuisine.class);
+    }
+
+    public static Async.Builder<DishDetailsPager> getDishListByCuisine(int page, int cuisineId) {
+        return ExRequestBuilder.get("/cuisine/dish/list/{n}")
+                .path("n", page)
+                .param("cuisineId", cuisineId)
+                .<ExRequestBuilder>as()
+                .async(DishDetailsPager.class);
+    }
+
+    public static Async.Builder<StallDetails> getStallDetails(int stallId) {
+        return ExRequestBuilder.get("/stall/details/{id}")
+                .path("id", stallId)
+                .<ExRequestBuilder>as()
+                .async(StallDetails.class);
+    }
+
+    public static Async.Builder<List<StallDetails>> getStallAll() {
+        return ExRequestBuilder.get("/stall/list/all")
+                .<ExRequestBuilder>as()
+                .asyncList(StallDetails.class);
+    }
+
+    public static Async.Builder<List<FeedbackMsg>> getFeedbackMsgAll() {
+        return ExRequestBuilder.get("/api/feedback/msg/all")
+                .<ExRequestBuilder>as()
+                .asyncList(FeedbackMsg.class);
+    }
+
+    public static Async.Builder<?> readFeedbackMsg(int id) {
+        return ExRequestBuilder.post("/api/feedback/msg/read/{id}")
+                .path("id", id)
+                .async();
+    }
+
+    public static Async.Builder<?> unreadFeedbackMsg(int id) {
+        return ExRequestBuilder.post("/api/feedback/msg/unread/{id}")
+                .path("id", id)
+                .async();
+    }
+
+    public static String getHeadUrl(String uid) {
+        return ExRequestBuilder.getUrl("/head/" + uid);
+    }
+
+    public static void logout() {
+        ExRequestBuilder.post("/api/logout")
+                .async()
+                .run();
+    }
+
+    public static Async.Builder<?> setHeadImage(File file) {
+        return ExRequestBuilder.post("/api/head")
+                .form()
+                .field("file", file)
+                .<ExRequestBuilder>as()
+                .async();
+    }
+
+    public static Async.Builder<?> setUserInfo(String type, Object value) {
+        return ExRequestBuilder.put("/api/info/{type}")
+                .path("type", type)
+                .form()
+                .field("value", value)
+                .async();
+    }
+
+    public static Async.Builder<Teacher> getUserTeacher() {
+        return ExRequestBuilder.get("/api/info/teacher")
+                .<ExRequestBuilder>as()
+                .async(Teacher.class);
+    }
+
+    public static Async.Builder<Student> getUserStudent() {
+        return ExRequestBuilder.get("/api/info/student")
+                .<ExRequestBuilder>as()
+                .async(Student.class);
+    }
+
+    public static Async.Builder<List<DishDetails>> getCollectAll() {
+        return ExRequestBuilder.get("/api/collect/list/all")
+                .<ExRequestBuilder>as()
+                .asyncList(DishDetails.class);
     }
 }

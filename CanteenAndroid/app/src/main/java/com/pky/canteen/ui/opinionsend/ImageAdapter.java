@@ -1,4 +1,4 @@
-package com.pky.canteen.ui.home.opinionsend;
+package com.pky.canteen.ui.opinionsend;
 
 import android.view.ViewGroup;
 import android.widget.ImageView;

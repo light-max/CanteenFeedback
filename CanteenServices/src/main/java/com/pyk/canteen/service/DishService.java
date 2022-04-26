@@ -18,4 +18,8 @@ public interface DishService extends IService<Dish> {
     List<DishTD> getDishTD(List<Dish> dishes);
 
     DishDetails getDishDetails(int id);
+
+    Page<Dish> list(Integer stallId, Integer n);
+
+    List<DishDetails> getDishDetailsList(List<Dish> list);
 }

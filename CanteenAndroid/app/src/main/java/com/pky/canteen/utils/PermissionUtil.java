@@ -1,9 +1,9 @@
 package com.pky.canteen.utils;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.pm.PackageManager;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -19,7 +19,7 @@ public class PermissionUtil {
     /**
      * 申请文件读写权限
      */
-    public static boolean localStorage(AppCompatActivity activity) {
+    public static boolean localStorage(Activity activity) {
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activity, new String[]{

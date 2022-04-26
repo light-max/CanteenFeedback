@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.pyk.canteen.constant.GlobalConstant;
 import com.pyk.canteen.controller.ResourceController;
 import com.pyk.canteen.mapper.*;
+import com.pyk.canteen.model.data.Result;
 import com.pyk.canteen.model.entity.Account;
 import com.pyk.canteen.model.entity.Dish;
 import com.pyk.canteen.model.entity.Opinion;
@@ -16,6 +17,7 @@ import com.pyk.canteen.model.result.Images;
 import com.pyk.canteen.model.td.OpinionTD;
 import com.pyk.canteen.service.OpinionService;
 import com.pyk.canteen.util.FileTools;
+import com.pyk.canteen.util.datetranslate.DefaultDataTranslate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -114,7 +116,23 @@ public class OpinionServiceImpl extends ServiceImpl<OpinionMapper, Opinion> impl
         List<Opinion> list = list(wrapper);
         List<COpinion> result = new ArrayList<>();
         for (Opinion o : list) {
-
+            Dish dish = dishMapper.selectById(o.getDishId());
+            Stall stall = stallMapper.selectById(dish.getSid());
+            Result<Images> images = resourceController.getImages("dish", dish.getId());
+            List<String> urls = images.getData().getUrls();
+            result.add(COpinion.builder()
+                    .id(o.getId())
+                    .content(o.getContent())
+                    .createById(o.getCreateById())
+                    .createTime(o.getCreateTime())
+                    .createTimeText(new DefaultDataTranslate(o.getCreateTime()).translateDate())
+                    .feedbackId(o.getFeedbackId())
+                    .dishCover(urls.isEmpty() ? "/images/no-image.jpg" : urls.get(0))
+                    .dishId(dish.getId())
+                    .dishName(dish.getName())
+                    .stallId(stall.getId())
+                    .stallName(stall.getName())
+                    .build());
         }
         return result;
     }
@@ -149,6 +167,7 @@ public class OpinionServiceImpl extends ServiceImpl<OpinionMapper, Opinion> impl
                         .createByType(account.getType() == 2 ? "教师" : "学生")
                         .images(images)
                         .video(videoFile.exists() ? "/opinion/video/" + o.getId() : null)
+                        .videoPlay(videoFile.exists() ? "/opinion/video/play/" + o.getId() : null)
                         .build());
             }
         }};

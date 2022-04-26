@@ -18,4 +18,20 @@ public class MessageFragment extends BaseFragment<MessageModel, MessageView> {
                              @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_message, container, false);
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        getV().getAdapter().setOnItemClickListener((data, position) -> {
+            getModel().read(data.getId());
+            data.setReading(true);
+            getV().getAdapter().notifyDataSetChanged();
+        });
+        getV().getAdapter().setOnItemLongClickListener((data, position) -> {
+            getModel().unread(data.getId());
+            toast("已标为未读");
+            data.setReading(false);
+            getV().getAdapter().notifyDataSetChanged();
+        });
+    }
 }

@@ -25,4 +25,6 @@ public class OpinionTD implements DateTranslate {
     private String createByType;
     private Images images;
     private String video;
+
+    private String videoPlay;
 }

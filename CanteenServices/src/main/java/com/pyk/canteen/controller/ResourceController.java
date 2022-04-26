@@ -7,7 +7,6 @@ import com.pyk.canteen.model.entity.Account;
 import com.pyk.canteen.model.result.Images;
 import com.pyk.canteen.util.FileTools;
 import com.pyk.canteen.util.UseDefaultSuccessResponse;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
@@ -16,11 +15,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,13 +106,12 @@ public class ResourceController {
                 .build());
     }
 
-    @PostMapping({"/s/head", "/t/head"})
+    @PostMapping({"/s/head", "/t/head", "/api/head"})
     @ResponseBody
     @UseDefaultSuccessResponse
     public void setHeadImage(
             @SessionAttribute("account") Account account,
             MultipartFile file
-
     ) throws IOException {
         File path = FileTools.getHeadImagePath(userHeadImagePath, account.getUid());
         FileTools.write(file.getInputStream(), path);
@@ -143,23 +141,36 @@ public class ResourceController {
 //        return ResponseEntity.ok(new FileSystemResource(file));
 //    }
 
-    @GetMapping(value = "/opinion/video/{id}")
+    @GetMapping(value = "/opinion/video/play/{id}")
+    public String playVideo(@PathVariable Integer id) {
+        return "/common/flvplay";
+    }
+
+    @GetMapping(value = "/opinion/video/{id}", produces = "video/mp4")
     @ResponseBody
     public void getOpinionVideo(HttpServletResponse response, @PathVariable Integer id) {
         try {
             File file = FileTools.getVideoFilePath(opinionVideosPath, id);
             if (file.exists()) {
                 response.setContentType("video/mp4");
-                InputStream iStream = new FileInputStream(file);
-                IOUtils.copy(iStream, response.getOutputStream());
+                response.setContentLengthLong(file.length());
+                FileInputStream in = new FileInputStream(file);
+                ServletOutputStream out = response.getOutputStream();
+                byte[] bytes = new byte[1024 * 10];
+                int len;
+                while ((len = in.read(bytes)) != -1) {
+                    out.write(bytes, 0, len);
+                }
                 response.flushBuffer();
             } else {
                 response.setStatus(HttpStatus.NOT_FOUND.value());
             }
         } catch (java.nio.file.NoSuchFileException e) {
             response.setStatus(HttpStatus.NOT_FOUND.value());
+            e.printStackTrace();
         } catch (Exception e) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            e.printStackTrace();
         }
     }
 

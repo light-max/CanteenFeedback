@@ -24,10 +24,12 @@ public class DishView extends BaseView<DishActivity> {
         super.onCreate(base, savedInstanceState);
         if (savedInstanceState != null) {
             base.map("id", savedInstanceState.getInt("id", 1));
+            base.map("hideStall", savedInstanceState.getBoolean("hideStall", false));
         }
         click(R.id.back, () -> base.getActivity().finish());
         TabLayout tab = get(R.id.tab);
         ViewPager pager = get(R.id.pager);
+        pager.setOffscreenPageLimit(3);
         BaseFragment<?, ?>[] fragments = new BaseFragment[]{
                 new DishDetailsFragment(),
                 new DishRemarkFragment(),
@@ -38,6 +40,7 @@ public class DishView extends BaseView<DishActivity> {
             fragment.map("id", base.map("id"));
             fragment.map("windowWidth", windowWidth);
         }
+        fragments[0].map("hideStall", base.map("hideStall"));
         FragmentManager manager = base.getActivity().getSupportFragmentManager();
         pager.setAdapter(new FragmentPagerAdapter(manager, 0) {
             @NonNull

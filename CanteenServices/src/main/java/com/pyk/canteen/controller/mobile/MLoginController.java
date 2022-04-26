@@ -8,6 +8,7 @@ import com.pyk.canteen.model.entity.Account;
 import com.pyk.canteen.model.entity.Student;
 import com.pyk.canteen.model.entity.Teacher;
 import com.pyk.canteen.service.LoginService;
+import com.pyk.canteen.util.UseDefaultSuccessResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -71,5 +72,12 @@ public class MLoginController {
     @ResponseBody
     public Result<Object> notLogin() {
         return Result.error(GlobalConstant.noAccess.getMessage());
+    }
+
+    @PostMapping("/api/logout")
+    @ResponseBody
+    @UseDefaultSuccessResponse
+    public void logout(HttpSession session) {
+        session.removeAttribute("account");
     }
 }

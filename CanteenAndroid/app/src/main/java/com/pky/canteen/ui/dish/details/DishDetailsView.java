@@ -2,6 +2,7 @@ package com.pky.canteen.ui.dish.details;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.viewpager2.widget.ViewPager2;
@@ -10,7 +11,8 @@ import com.pky.canteen.R;
 import com.pky.canteen.base.call.Base;
 import com.pky.canteen.base.mvp.BaseView;
 import com.pky.canteen.data.result.DishDetails;
-import com.pky.canteen.ui.home.opinionsend.OpinionSendActivity;
+import com.pky.canteen.ui.opinionsend.OpinionSendActivity;
+import com.pky.canteen.ui.stall.StallActivity;
 
 import java.util.List;
 
@@ -22,9 +24,6 @@ public class DishDetailsView extends BaseView<DishDetailsFragment> {
     @SuppressLint("DefaultLocale")
     @Override
     public void onViewCreated(Base base, Bundle savedInstanceState) {
-        click(R.id.stall, () -> {
-            base.toast("档口详情");
-        });
         pager = get(R.id.pager);
         page = get(R.id.page);
         pager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
@@ -56,6 +55,13 @@ public class DishDetailsView extends BaseView<DishDetailsFragment> {
         material.setText(data.getMaterial());
         des.setText(data.getDes());
 
+        if (base.map("hideStall")) {
+            get(R.id.stall).setVisibility(View.GONE);
+        } else {
+            click(R.id.stall, () -> {
+                StallActivity.start(base.getContext(), data.getStallId());
+            });
+        }
 
         List<String> images = data.getImages();
         if (images.isEmpty()) {

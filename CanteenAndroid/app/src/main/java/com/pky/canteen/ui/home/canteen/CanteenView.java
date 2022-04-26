@@ -23,14 +23,20 @@ public class CanteenView extends BaseView<CanteenFragment> {
     private Fragment[] fragments;
 
     @Override
-    public void onViewCreated(Base base, Bundle savedInstanceState) {
-        tab = get(R.id.tab);
-        pager = get(R.id.pager);
+    public void onCreate(Base base, Bundle savedInstanceState) {
+        super.onCreate(base, savedInstanceState);
         fragments = new Fragment[]{
                 new TodayFragment(),
                 new AllFragment(),
                 new CategoryFragment()
         };
+    }
+
+    @Override
+    public void onViewCreated(Base base, Bundle savedInstanceState) {
+        tab = get(R.id.tab);
+        pager = get(R.id.pager);
+        pager.setOffscreenPageLimit(3);
         FragmentManager manager = base.getFragment().getChildFragmentManager();
         pager.setAdapter(new FragmentStatePagerAdapter(manager, 0) {
             @NonNull

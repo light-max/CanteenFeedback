@@ -7,6 +7,7 @@ import com.pyk.canteen.model.data.Result;
 import com.pyk.canteen.model.entity.Account;
 import com.pyk.canteen.model.entity.Collect;
 import com.pyk.canteen.model.result.Collector;
+import com.pyk.canteen.model.result.DishDetails;
 import com.pyk.canteen.service.CollectService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -54,5 +55,13 @@ public class CollectController {
         pager.setTailAppend("?dishId=" + dishId);
         List<Collector> list = service.getCollector(page.getRecords());
         return Result.success(new PagerData(pager, list));
+    }
+
+    @GetMapping("/api/collect/list/all")
+    @ResponseBody
+    public Result<List<DishDetails>> getCollectAll(
+            @SessionAttribute("account") Account account
+    ) {
+        return Result.success(service.getCollectAll(account.getUid()));
     }
 }

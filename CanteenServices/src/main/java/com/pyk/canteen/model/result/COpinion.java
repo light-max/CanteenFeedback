@@ -15,6 +15,7 @@ public class COpinion {
 
     private Integer stallId;
 
+    private String createTimeText;
     private String stallName;
     private String dishName;
     private String dishCover;

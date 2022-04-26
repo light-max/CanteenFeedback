@@ -32,7 +32,10 @@
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity android:name=".ui.home.HomeActivity" />
         <activity android:name=".ui.dish.DishActivity" />
-        <activity android:name=".ui.home.opinionsend.OpinionSendActivity" />
+        <activity android:name=".ui.opinionsend.OpinionSendActivity" />
+        <activity android:name=".ui.stall.StallActivity" />
+        <activity android:name=".ui.userinfo.UserInfoActivity" />
+        <activity android:name=".ui.collect.CollectActivity" />
     </application>
 
 </manifest>

@@ -4,6 +4,7 @@ import com.pyk.canteen.controller.ResourceController;
 import com.pyk.canteen.model.data.Result;
 import com.pyk.canteen.model.entity.Stall;
 import com.pyk.canteen.model.result.Images;
+import com.pyk.canteen.model.result.StallDetails;
 import com.pyk.canteen.service.StallService;
 import com.pyk.canteen.util.ump.ViewModelParameter;
 import org.springframework.stereotype.Controller;
@@ -11,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Controller
 public class StallController {
@@ -29,6 +31,18 @@ public class StallController {
         model.addAttribute("list", service.list(enable));
         model.addAttribute("status", enable);
         return "/canteen/stall";
+    }
+
+    @GetMapping("/stall/list/all")
+    @ResponseBody
+    public Result<List<StallDetails>> getAllStall() {
+        return Result.success(service.getAllStall());
+    }
+
+    @GetMapping("/stall/details/{id}")
+    @ResponseBody
+    public Result<StallDetails> getDetails(@PathVariable Integer id) {
+        return Result.success(service.getStallDetails(id));
     }
 
     @GetMapping("/canteen/stall/add")

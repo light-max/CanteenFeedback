@@ -7,8 +7,11 @@ import com.pyk.canteen.constant.GlobalConstant;
 import com.pyk.canteen.mapper.*;
 import com.pyk.canteen.model.entity.Account;
 import com.pyk.canteen.model.entity.Collect;
+import com.pyk.canteen.model.entity.Dish;
 import com.pyk.canteen.model.result.Collector;
+import com.pyk.canteen.model.result.DishDetails;
 import com.pyk.canteen.service.CollectService;
+import com.pyk.canteen.service.DishService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -28,6 +31,9 @@ public class CollectServiceImpl extends ServiceImpl<CollectMapper, Collect> impl
 
     @Resource
     TeacherMapper teacherMapper;
+
+    @Resource
+    DishService dishService;
 
     @Override
     public Collect collect(String uid, Integer dishId) {
@@ -93,5 +99,21 @@ public class CollectServiceImpl extends ServiceImpl<CollectMapper, Collect> impl
                         .build());
             }
         }};
+    }
+
+    @Override
+    public List<DishDetails> getCollectAll(String uid) {
+        List<Collect> list = list(new QueryWrapper<Collect>()
+                .lambda()
+                .eq(Collect::getUid, uid));
+        if (list.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<Integer> ids = new ArrayList<>();
+        for (Collect collect : list) {
+            ids.add(collect.getDishId());
+        }
+        List<Dish> dishes = dishMapper.selectBatchIds(ids);
+        return dishService.getDishDetailsList(dishes);
     }
 }

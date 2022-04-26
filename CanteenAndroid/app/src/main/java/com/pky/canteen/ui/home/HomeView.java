@@ -63,11 +63,11 @@ public class HomeView extends BaseView<HomeActivity> {
         });
         nav.setOnNavigationItemSelectedListener(item -> {
             if (item.getItemId() == R.id.canteen) {
-                pager.setCurrentItem(0);
+                pager.setCurrentItem(0, false);
             } else if (item.getItemId() == R.id.message) {
-                pager.setCurrentItem(1);
+                pager.setCurrentItem(1, false);
             } else if (item.getItemId() == R.id.mine) {
-                pager.setCurrentItem(2);
+                pager.setCurrentItem(2, false);
             }
             return true;
         });

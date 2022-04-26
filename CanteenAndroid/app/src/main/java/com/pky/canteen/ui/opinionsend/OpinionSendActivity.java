@@ -1,4 +1,4 @@
-package com.pky.canteen.ui.home.opinionsend;
+package com.pky.canteen.ui.opinionsend;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -43,7 +43,7 @@ public class OpinionSendActivity extends BaseActivity<OpinionSendModel, OpinionS
     public void video() {
         if (PermissionUtil.localStorage(this)) {
             Intent intent = new Intent(Intent.ACTION_PICK, null);
-            intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "video/*");
+            intent.setDataAndType(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, "video/*");
             startActivityForResult(intent, VIDEO);
         } else {
             toast("没有文件读取权限");
