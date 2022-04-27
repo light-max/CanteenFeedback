@@ -1,18 +1,21 @@
 package com.pky.canteen.data.result;
 
-public class Opinion {
+import java.util.List;
 
+public class Opinion {
     private Integer id;
     private Integer dishId;
     private String createById;
     private String content;
     private Long createTime;
-    private Object feedbackId;
+    private Integer feedbackId;
     private Integer stallId;
     private String createTimeText;
     private String stallName;
     private String dishName;
     private String dishCover;
+    private List<String> images;
+    private String video;
 
     public Integer getId() {
         return id;
@@ -54,11 +57,11 @@ public class Opinion {
         this.createTime = createTime;
     }
 
-    public Object getFeedbackId() {
+    public Integer getFeedbackId() {
         return feedbackId;
     }
 
-    public void setFeedbackId(Object feedbackId) {
+    public void setFeedbackId(Integer feedbackId) {
         this.feedbackId = feedbackId;
     }
 
@@ -100,5 +103,21 @@ public class Opinion {
 
     public void setDishCover(String dishCover) {
         this.dishCover = dishCover;
+    }
+
+    public List<String> getImages() {
+        return images;
+    }
+
+    public void setImages(List<String> images) {
+        this.images = images;
+    }
+
+    public String getVideo() {
+        return video;
+    }
+
+    public void setVideo(String video) {
+        this.video = video;
     }
 }

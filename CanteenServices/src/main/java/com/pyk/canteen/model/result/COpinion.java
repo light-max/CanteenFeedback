@@ -3,6 +3,8 @@ package com.pyk.canteen.model.result;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 @Builder
 public class COpinion {
@@ -19,4 +21,7 @@ public class COpinion {
     private String stallName;
     private String dishName;
     private String dishCover;
+
+    private List<String> images;
+    private String video;
 }

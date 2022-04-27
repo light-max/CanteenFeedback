@@ -36,6 +36,12 @@
         <activity android:name=".ui.stall.StallActivity" />
         <activity android:name=".ui.userinfo.UserInfoActivity" />
         <activity android:name=".ui.collect.CollectActivity" />
+        <activity android:name=".ui.opinion.OpinionActivity" />
+        <activity android:name=".ui.opiniondetails.OpinionDetailsActivity" />
+        <activity android:name=".ui.videoplayy.VideoPlayActivity" />
+        <activity android:name=".ui.complaint.ComplaintActivity" />
+        <activity android:name=".ui.complaintlist.ComplaintListActivity" />
+        <activity android:name=".ui.serach.SearchActivity" />
     </application>
 
 </manifest>

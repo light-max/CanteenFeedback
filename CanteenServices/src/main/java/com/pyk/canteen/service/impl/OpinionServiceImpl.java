@@ -117,9 +117,10 @@ public class OpinionServiceImpl extends ServiceImpl<OpinionMapper, Opinion> impl
         List<COpinion> result = new ArrayList<>();
         for (Opinion o : list) {
             Dish dish = dishMapper.selectById(o.getDishId());
-            Stall stall = stallMapper.selectById(dish.getSid());
             Result<Images> images = resourceController.getImages("dish", dish.getId());
+            Stall stall = stallMapper.selectById(dish.getSid());
             List<String> urls = images.getData().getUrls();
+            File videoFile = FileTools.getVideoFilePath(opinionVideosPath, o.getId());
             result.add(COpinion.builder()
                     .id(o.getId())
                     .content(o.getContent())
@@ -131,7 +132,9 @@ public class OpinionServiceImpl extends ServiceImpl<OpinionMapper, Opinion> impl
                     .dishId(dish.getId())
                     .dishName(dish.getName())
                     .stallId(stall.getId())
+                    .images(resourceController.getImages("opinion", o.getId()).getData().getUrls())
                     .stallName(stall.getName())
+                    .video(videoFile.exists() ? "/opinion/video/" + o.getId() : null)
                     .build());
         }
         return result;
@@ -171,5 +174,30 @@ public class OpinionServiceImpl extends ServiceImpl<OpinionMapper, Opinion> impl
                         .build());
             }
         }};
+    }
+
+    @Override
+    public COpinion getDetails(Integer id) {
+        Opinion o = getById(id);
+        Dish dish = dishMapper.selectById(o.getDishId());
+        Stall stall = stallMapper.selectById(dish.getSid());
+        Result<Images> images = resourceController.getImages("dish", dish.getId());
+        List<String> urls = images.getData().getUrls();
+        File videoFile = FileTools.getVideoFilePath(opinionVideosPath, o.getId());
+        return COpinion.builder()
+                .id(o.getId())
+                .content(o.getContent())
+                .createById(o.getCreateById())
+                .createTime(o.getCreateTime())
+                .createTimeText(new DefaultDataTranslate(o.getCreateTime()).translateDate())
+                .feedbackId(o.getFeedbackId())
+                .dishCover(urls.isEmpty() ? "/images/no-image.jpg" : urls.get(0))
+                .dishId(dish.getId())
+                .dishName(dish.getName())
+                .stallId(stall.getId())
+                .stallName(stall.getName())
+                .images(resourceController.getImages("opinion", o.getId()).getData().getUrls())
+                .video(videoFile.exists() ? "/opinion/video/" + o.getId() : null)
+                .build();
     }
 }

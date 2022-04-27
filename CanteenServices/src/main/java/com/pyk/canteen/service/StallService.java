@@ -16,4 +16,6 @@ public interface StallService extends IService<Stall> {
     List<StallDetails> getAllStall();
 
     StallDetails getStallDetails(int id);
+
+    List<Stall> search(String value);
 }

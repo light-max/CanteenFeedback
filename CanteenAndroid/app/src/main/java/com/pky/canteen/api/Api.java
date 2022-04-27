@@ -2,11 +2,14 @@ package com.pky.canteen.api;
 
 import com.pky.canteen.async.Async;
 import com.pky.canteen.data.result.CollectorPager;
+import com.pky.canteen.data.result.ComplaintDetails;
 import com.pky.canteen.data.result.Cuisine;
 import com.pky.canteen.data.result.DishDetails;
 import com.pky.canteen.data.result.DishDetailsPager;
+import com.pky.canteen.data.result.Feedback;
 import com.pky.canteen.data.result.FeedbackMsg;
 import com.pky.canteen.data.result.MenuItemPager;
+import com.pky.canteen.data.result.Opinion;
 import com.pky.canteen.data.result.RemarkPager;
 import com.pky.canteen.data.result.StallDetails;
 import com.pky.canteen.data.result.Student;
@@ -260,5 +263,61 @@ public class Api {
         return ExRequestBuilder.get("/api/collect/list/all")
                 .<ExRequestBuilder>as()
                 .asyncList(DishDetails.class);
+    }
+
+    public static Async.Builder<List<Opinion>> getOpinionAll() {
+        return ExRequestBuilder.get("/api/opinion/list/all")
+                .<ExRequestBuilder>as()
+                .asyncList(Opinion.class);
+    }
+
+    public static Async.Builder<Opinion> getOpinion(int id) {
+        return ExRequestBuilder.get("/api/opinion/details/{id}")
+                .path("id", id)
+                .<ExRequestBuilder>as()
+                .async(Opinion.class);
+    }
+
+    public static Async.Builder<Feedback> getFeedbackById(int id) {
+        return ExRequestBuilder.get("/feedback/{id}")
+                .path("id", id)
+                .<ExRequestBuilder>as()
+                .async(Feedback.class);
+    }
+
+    public static Async.Builder<ComplaintDetails> getComplaintDetails(int feedbackId) {
+        return ExRequestBuilder.get("/api/complaint")
+                .param("feedbackId", feedbackId)
+                .<ExRequestBuilder>as()
+                .async(ComplaintDetails.class);
+    }
+
+    public static Async.Builder<?> sendComplaint(int feedbackId, String des) {
+        return ExRequestBuilder.post("/api/complaint")
+                .form()
+                .field("feedbackId", feedbackId)
+                .field("des", des)
+                .async();
+    }
+
+    public static Async.Builder<List<ComplaintDetails>> getComplaintListAll() {
+        return ExRequestBuilder.get("/api/complaint/list/all")
+                .<ExRequestBuilder>as()
+                .asyncList(ComplaintDetails.class);
+    }
+
+    public static Async.Builder<List<StallDetails>> searchStall(String value) {
+        return ExRequestBuilder.get("/search/stall")
+                .param("value", value)
+                .<ExRequestBuilder>as()
+                .asyncList(StallDetails.class);
+    }
+
+    public static Async.Builder<DishDetailsPager> searchDish(int page, String value) {
+        return ExRequestBuilder.get("/search/dish/{page}")
+                .path("page", page)
+                .param("value", value)
+                .<ExRequestBuilder>as()
+                .async(DishDetailsPager.class);
     }
 }

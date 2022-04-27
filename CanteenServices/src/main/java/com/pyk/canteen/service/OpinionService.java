@@ -20,4 +20,6 @@ public interface OpinionService extends IService<Opinion> {
     List<COpinion> list(Account account, Integer dishId);
 
     List<OpinionTD> get(List<Opinion> list);
+
+    COpinion getDetails(Integer id);
 }

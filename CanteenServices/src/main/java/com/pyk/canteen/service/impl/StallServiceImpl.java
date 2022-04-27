@@ -77,4 +77,11 @@ public class StallServiceImpl extends ServiceImpl<StallMapper, Stall> implements
                 .images(urls)
                 .build();
     }
+
+    @Override
+    public List<Stall> search(String value) {
+        return list(new QueryWrapper<Stall>()
+                .lambda()
+                .like(Stall::getName, value));
+    }
 }

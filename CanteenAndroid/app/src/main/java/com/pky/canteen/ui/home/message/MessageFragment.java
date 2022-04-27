@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 
 import com.pky.canteen.R;
 import com.pky.canteen.base.fragment.BaseFragment;
+import com.pky.canteen.ui.opiniondetails.OpinionDetailsActivity;
 
 public class MessageFragment extends BaseFragment<MessageModel, MessageView> {
     @Nullable
@@ -26,6 +27,7 @@ public class MessageFragment extends BaseFragment<MessageModel, MessageView> {
             getModel().read(data.getId());
             data.setReading(true);
             getV().getAdapter().notifyDataSetChanged();
+            OpinionDetailsActivity.start(requireContext(), data.getOpinionId());
         });
         getV().getAdapter().setOnItemLongClickListener((data, position) -> {
             getModel().unread(data.getId());

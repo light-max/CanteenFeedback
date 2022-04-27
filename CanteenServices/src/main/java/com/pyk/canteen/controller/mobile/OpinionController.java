@@ -35,12 +35,18 @@ public class OpinionController {
         service.post(account, dishId, content, files, video);
     }
 
-    @GetMapping("/api/opinion/list")
+    @GetMapping("/api/opinion/list/all")
     @ResponseBody
     public Result<List<COpinion>> list(
             @SessionAttribute("account") Account account,
             @RequestParam(required = false) Integer dishId
     ) {
         return Result.success(service.list(account, dishId));
+    }
+
+    @GetMapping("/api/opinion/details/{id}")
+    @ResponseBody
+    public Result<COpinion> getDetails(@PathVariable Integer id) {
+        return Result.success(service.getDetails(id));
     }
 }

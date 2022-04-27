@@ -2,6 +2,7 @@ package com.pyk.canteen.controller;
 
 import com.pyk.canteen.constant.AssertException;
 import com.pyk.canteen.constant.GlobalConstant;
+import com.pyk.canteen.exception.NonStaticResourceHttpRequestHandler;
 import com.pyk.canteen.model.data.Result;
 import com.pyk.canteen.model.entity.Account;
 import com.pyk.canteen.model.result.Images;
@@ -15,11 +16,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
+import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -141,14 +148,9 @@ public class ResourceController {
 //        return ResponseEntity.ok(new FileSystemResource(file));
 //    }
 
-    @GetMapping(value = "/opinion/video/play/{id}")
-    public String playVideo(@PathVariable Integer id) {
-        return "/common/flvplay";
-    }
-
-    @GetMapping(value = "/opinion/video/{id}", produces = "video/mp4")
+    @GetMapping(value = "/opinion/video/raw/{id}", produces = "video/mp4")
     @ResponseBody
-    public void getOpinionVideo(HttpServletResponse response, @PathVariable Integer id) {
+    public void getOpinionVideoStream(HttpServletResponse response, @PathVariable Integer id) {
         try {
             File file = FileTools.getVideoFilePath(opinionVideosPath, id);
             if (file.exists()) {
@@ -174,4 +176,34 @@ public class ResourceController {
         }
     }
 
+    @Resource
+    NonStaticResourceHttpRequestHandler nonStaticResourceHttpRequestHandler;
+
+    @GetMapping(value = "/opinion/video/{id}")
+    @ResponseBody
+    public void getOpinionVideo(
+            @PathVariable Integer id,
+            @RequestParam(required = false) Boolean range,
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) throws IOException, ServletException {
+        if (range == null) {
+            range = false;
+        }
+        if (range) {
+            File file = FileTools.getVideoFilePath(opinionVideosPath, id);
+            if (file.exists()) {
+                Path path = Paths.get(file.getAbsolutePath());
+                String mimeType = Files.probeContentType(path);
+                response.setContentType(mimeType);
+                request.setAttribute(NonStaticResourceHttpRequestHandler.ATTR_FILE, path);
+                response.setHeader("Content-Type", mimeType);
+                nonStaticResourceHttpRequestHandler.handleRequest(request, response);
+            } else {
+                response.setStatus(HttpStatus.NOT_FOUND.value());
+            }
+        } else {
+            getOpinionVideoStream(response, id);
+        }
+    }
 }

@@ -25,7 +25,7 @@ public class FeedbackController {
         service.post(opinionId, content);
     }
 
-    @GetMapping("/canteen/feedback/{id}")
+    @GetMapping({"/canteen/feedback/{id}", "/feedback/{id}"})
     @ResponseBody
     public Result<Feedback> get(@PathVariable Integer id) {
         Feedback feedback = service.getById(id);

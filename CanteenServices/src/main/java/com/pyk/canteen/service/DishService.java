@@ -22,4 +22,6 @@ public interface DishService extends IService<Dish> {
     Page<Dish> list(Integer stallId, Integer n);
 
     List<DishDetails> getDishDetailsList(List<Dish> list);
+
+    Page<Dish> search(Integer n, String value);
 }

@@ -22,7 +22,9 @@ import com.pky.canteen.base.fragment.NoMvpFragment;
 import com.pky.canteen.data.livedata.StudentData;
 import com.pky.canteen.data.livedata.TeacherData;
 import com.pky.canteen.ui.collect.CollectActivity;
+import com.pky.canteen.ui.complaintlist.ComplaintListActivity;
 import com.pky.canteen.ui.login.LoginActivity;
+import com.pky.canteen.ui.opinion.OpinionActivity;
 import com.pky.canteen.ui.userinfo.UserInfoActivity;
 
 public class MineFragment extends NoMvpFragment {
@@ -71,10 +73,12 @@ public class MineFragment extends NoMvpFragment {
             startActivity(intent);
         });
         click(R.id.view_opinion, () -> {
-
+            Intent intent = new Intent(getContext(), OpinionActivity.class);
+            startActivity(intent);
         });
         click(R.id.view_complaint, () -> {
-
+            Intent intent = new Intent(getContext(), ComplaintListActivity.class);
+            startActivity(intent);
         });
         click(R.id.view_logout, () -> {
             new AlertDialog.Builder(getContext())

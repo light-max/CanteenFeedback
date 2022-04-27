@@ -1,5 +1,6 @@
 package com.pyk.canteen.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -137,5 +138,19 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
                 add(getDishDetails(dish.getId()));
             }
         }};
+    }
+
+    @Override
+    public Page<Dish> search(Integer n, String value) {
+        int size = 4;
+        if (n == null || n <= 1) {
+            size = 8;
+        }
+        LambdaQueryWrapper<Dish> wrapper = new QueryWrapper<Dish>()
+                .lambda()
+                .like(Dish::getName, value)
+                .like(Dish::getMaterial, value)
+                .like(Dish::getDes, value);
+        return page(new Page<>(n == null ? 1 : n, size), wrapper);
     }
 }

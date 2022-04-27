@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.util.List;
 
 @Service
 public class ComplaintServiceImpl extends ServiceImpl<ComplaintMapper, Complaint> implements ComplaintService {
@@ -140,5 +141,19 @@ public class ComplaintServiceImpl extends ServiceImpl<ComplaintMapper, Complaint
         complaint.setResultTime(System.currentTimeMillis());
         complaint.check();
         updateById(complaint);
+    }
+
+    @Override
+    public Complaint getByFeedbackId(Integer feedbackId) {
+        return getOne(new QueryWrapper<Complaint>()
+                .lambda()
+                .eq(Complaint::getFeedbackId, feedbackId));
+    }
+
+    @Override
+    public List<Complaint> getListAllByUid(String uid) {
+        return list(new QueryWrapper<Complaint>()
+                .lambda()
+                .eq(Complaint::getCreateById, uid));
     }
 }

@@ -1,5 +1,6 @@
 package com.pky.canteen.ui.home.canteen;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import com.pky.canteen.base.mvp.BaseView;
 import com.pky.canteen.ui.home.canteen.all.AllFragment;
 import com.pky.canteen.ui.home.canteen.category.CategoryFragment;
 import com.pky.canteen.ui.home.canteen.today.TodayFragment;
+import com.pky.canteen.ui.serach.SearchActivity;
 
 public class CanteenView extends BaseView<CanteenFragment> {
     private TabLayout tab;
@@ -34,6 +36,10 @@ public class CanteenView extends BaseView<CanteenFragment> {
 
     @Override
     public void onViewCreated(Base base, Bundle savedInstanceState) {
+        click(R.id.search, () -> {
+            Intent intent = new Intent(base.getContext(), SearchActivity.class);
+            base.getContext().startActivity(intent);
+        });
         tab = get(R.id.tab);
         pager = get(R.id.pager);
         pager.setOffscreenPageLimit(3);
